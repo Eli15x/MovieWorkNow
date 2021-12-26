@@ -5,6 +5,7 @@ import (
   "github.com/labstack/echo/v4/middleware"
   "net/http"
   "go.mongodb.org/mongo-driver/mongo/options" // Opções para conecar com o mongo
+  "github.com/Eli15x/MovieWorkNow/infrastructure"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
   e.GET("/", hello)
 
   // Connecting to Mongo.
-  /*	credential := options.Credential{
+  	credential := options.Credential{
 		Username:      config.MongodbUser,
 		Password:      config.MongodbPassword,
 		PasswordSet:   true,
@@ -26,7 +27,7 @@ func main() {
 		AuthMechanism: config.MongodbAuth,
 	}
 
-	if err := storage.GetInstance().Initialize(ctx, credential, "mongodb://"+config.MongodbHost+":"+config.MongodbPort,
+  /* if err := storage.GetInstance().Initialize(ctx, credential, "mongodb://"+config.MongodbHost+":"+config.MongodbPort,
 		config.MongodbDatabase); err != nil {
 		e.Logger.Fatal("[Users-Intervention] Could not resolve Data access layer. Error: ", err)
 	}*/

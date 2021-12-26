@@ -1,4 +1,4 @@
-module test
+module github.com/Eli15x/MovieWorkNow
 
 go 1.17
 
