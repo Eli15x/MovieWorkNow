@@ -31,13 +31,12 @@ func main() {
 		AuthSource:    config.MongodbDatabase,
 		AuthMechanism: config.MongodbAuth,
 	} */
-  /*
-  clientOptions := options.Client().
-  ApplyURI("mongodb+srv://elisacds:elisacds@cluster0.e7uxp.mongodb.net/MovieWorkNow?retryWrites=true&w=majority")
-  */ 
+
+  //Context
   ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
   defer cancel()
 
+  //Connection to Mongo
   if err := storage.GetInstance().Initialize(ctx); err != nil {
 		e.Logger.Fatal("[MONGO DB - MovieWorkNow] Could not resolve Data access layer. Error: ", err)
 	}
