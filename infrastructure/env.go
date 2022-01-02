@@ -4,9 +4,9 @@ import "os"
 
 var (
 	MongodbAuth     = os.Getenv("MONGODB_AUTH")
-	MongodbDatabase = os.Getenv("MONGODB")
-	MongodbUser     = os.Getenv("DBAAS_MONGODB_USER")
-	MongodbPassword = os.Getenv("DBAAS_MONGODB_PASSWORD")
+	MongodbDatabase = os.Getenv("Cluster0MovieWorkNow")
+	MongodbUser     = os.Getenv("elisacds")
+	MongodbPassword = os.Getenv("elisacds")
 	MongodbHost     = os.Getenv("DBAAS_MONGODB_HOSTS")
 	MongodbPort     = os.Getenv("DBAAS_MONGODB_PORT")
 )
