@@ -15,10 +15,19 @@ var (
 )
 
 type Command interface {
-	createNewProfile(ctx echo.Context, name string,email string,password string,birthDate time.Time) error
+	CreateNewProfile(ctx echo.Context, name string,email string,password string,birthDate time.Time) error
 }
 
-func createNewProfile(ctx echo.Context,name string, email string, password string, birthDate time.Time) error {
+type MovieWorkNowService struct{}
+
+func GetInstance() Command {
+	once.Do(func() {
+		instance = &MovieWorkNowService{}
+	})
+	return instance
+}
+
+func (m *MovieWorkNowService)CreateNewProfile(ctx echo.Context,name string, email string, password string, birthDate time.Time) error {
 	profile := models.Profile {
 		UserId: "1223",
 		Name : name,
