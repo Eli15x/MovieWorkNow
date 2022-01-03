@@ -49,19 +49,20 @@ func (m *mongodbImpl) Initialize(ctx context.Context) error {
 	clientOptions := options.Client().
 	ApplyURI("mongodb+srv://elisacds:elisacds@cluster0.e7uxp.mongodb.net/MovieWorkNow?retryWrites=true&w=majority")
 
-	_, err := mongo.Connect(ctx, clientOptions)
+	client, err := mongo.Connect(ctx, clientOptions)
     if err != nil {
         log.Fatal(err)
     }
 
-	println("passou")
+	//Está dando proble	
+
 	/*err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		return err
 	}*/
-	println("passou2")
-	//m.dbName = dbName
-	//m.client = client
+
+	m.dbName = "MovieWorkNow"
+	m.client = client
 	return nil
 }
 

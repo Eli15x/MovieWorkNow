@@ -1,7 +1,6 @@
 package models
 
 import (
-	"time"
 )
 
 type UserContent struct {

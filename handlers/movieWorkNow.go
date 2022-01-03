@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"github.com/Eli15x/MovieWorkNow/service"
 )
 
 func CreateProfile(c echo.Context) error {
@@ -36,6 +37,11 @@ func CreateProfile(c echo.Context) error {
 
 	if birthDate == "" {
 		return c.String(403,"Create Profile Error: birthDate not find")
+	}
+
+	err := service.createNewProfile(c,name,email,password,birthDate)
+	if err != nil {
+		return c.String(403,"Create New Profile Error: Error in try to create new Profile")
 	}
 
 	
