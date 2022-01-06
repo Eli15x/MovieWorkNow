@@ -15,6 +15,7 @@ var (
 
 type Command interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
+	AddInformationProfile(ctx echo.Context,id string,job string, message string) error
 }
 
 type MovieWorkNowService struct{}
@@ -45,11 +46,12 @@ func (m *MovieWorkNowService)CreateNewProfile(ctx echo.Context,name string, emai
 	return  nil
 }
 
-func (m *MovieWorkNowService)AddInformationProfile(ctx echo.Context,id string,job string, message string, cargo string) error {
+func (m *MovieWorkNowService)AddInformationProfile(ctx echo.Context,id string,job string, message string) error {
 	var profile models.Profile
+
+	userID := map[string]interface{}{"UserId": id}
 	
-	mgoErr := storage.GetInstance().FindOne(ctx, "profile",
-		map[string]interface{}{"UserId": id}, &profile)
+	mgoErr := storage.GetInstance().FindOne(ctx, "profile",userID, &profile)
 	if mgoErr != nil {
 		return ctx.String(403,"Add Information Profile: problem to Find by Id into MongoDB")
 	}
@@ -68,7 +70,7 @@ func (m *MovieWorkNowService)AddInformationProfile(ctx echo.Context,id string,jo
     // mudar aqui que o updateOne tem mais um parametro que acho que é o codigo de qual é pra atualizar
 	// que provavelmente será o id.
 
-	_, err := storage.GetInstance().UpdateOne(ctx,"profile",profileInsert)
+	_, err := storage.GetInstance().UpdateOne(ctx,"profile",userID,profileInsert)
 	if err != nil {
 		return ctx.String(403,"Create New Profile: problem to insert into MongoDB")
 	}

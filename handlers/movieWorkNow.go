@@ -75,9 +75,7 @@ func AddInformation(c echo.Context) error {
 		return c.String(403,"Create Profile Error: message not find")
 	}
 
-
-
-	err := service.GetInstance().AddInformationProfile(c,id,job,message,cargo)
+	err := service.GetInstance().AddInformationProfile(c,id,job,message)
 	if err != nil{
 		return c.String(403,"Create Profile error: error in service")
 	}
