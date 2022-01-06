@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"sync"
 	"time"
+	"fmt"
 	"github.com/Eli15x/MovieWorkNow/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/newrelic/go-agent/v3/newrelic"
@@ -82,11 +83,10 @@ func (m *mongodbImpl) WithTransaction(ctx echo.Context, fn func(context.Context)
 
 // Insert stores documents in the collection
 func (m *mongodbImpl) Insert(ctx echo.Context, collName string, doc interface{}) (interface{}, error) {
-	segment := utils.StartSegmentWithDatastoreProduct(ctx, "Mongo.Insert", newrelic.DatastoreMongoDB, "Insert", collName)
-	defer segment.End()
 
 	insertedObject, err := m.client.Database(m.dbName).Collection(collName).InsertOne(ctx.Request().Context(), doc)
 	if insertedObject == nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	return insertedObject.InsertedID, err

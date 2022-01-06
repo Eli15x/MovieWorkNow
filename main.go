@@ -27,10 +27,9 @@ func main() {
 	}
 
   // handler
-	MovieWorkNowHandler := e.Group("/work")
-	MovieWorkNowHandler.GET("/users/:globoid/services/:service/devices/:device/countries/:countryIsoCode", handlers.GetIntervention)
-	MovieWorkNowHandler.GET("/users/:globoid/services/:service/devices/:device", handlers.GetIntervention)
-	MovieWorkNowHandler.POST("", handlers.CreateIntervention)
+	MovieWorkNowHandler := e.Group("/profile")
+	MovieWorkNowHandler.GET("/name/:name/email/:email/password/:password", handlers.CreateProfile)
+  MovieWorkNowHandler.GET("/id/:id/job/:job/message/:message", handlers.AddInformation)
   // Start server
   e.Logger.Fatal(e.Start(":1323"))
 }

@@ -2,11 +2,10 @@ package service
 
 import (
 	"sync"
-	"time"
 	"github.com/labstack/echo/v4"
 	"github.com/Eli15x/MovieWorkNow/storage"
 	"github.com/Eli15x/MovieWorkNow/models"
-
+	"github.com/fatih/structs"
 )
 
 var (
@@ -15,7 +14,7 @@ var (
 )
 
 type Command interface {
-	CreateNewProfile(ctx echo.Context, name string,email string,password string,birthDate time.Time) error
+	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 }
 
 type MovieWorkNowService struct{}
@@ -27,16 +26,49 @@ func GetInstance() Command {
 	return instance
 }
 
-func (m *MovieWorkNowService)CreateNewProfile(ctx echo.Context,name string, email string, password string, birthDate time.Time) error {
-	profile := models.Profile {
+func (m *MovieWorkNowService)CreateNewProfile(ctx echo.Context,name string, email string, password string) error {
+	profile := &models.Profile {
 		UserId: "1223",
 		Name : name,
 		Email: email,
 		PassWord: password,
-		BirthDate: birthDate,
 	}
 
-	_, err := storage.GetInstance().Insert(ctx,"profile",profile)
+	profileInsert := structs.Map(profile)
+	
+
+	_, err := storage.GetInstance().Insert(ctx,"profile",profileInsert)
+	if err != nil {
+		return ctx.String(403,"Create New Profile: problem to insert into MongoDB")
+	}
+
+	return  nil
+}
+
+func (m *MovieWorkNowService)AddInformationProfile(ctx echo.Context,id string,job string, message string, cargo string) error {
+	var profile models.Profile
+	
+	mgoErr := storage.GetInstance().FindOne(ctx, "profile",
+		map[string]interface{}{"UserId": id}, &profile)
+	if mgoErr != nil {
+		return ctx.String(403,"Add Information Profile: problem to Find by Id into MongoDB")
+	}
+
+	newProfile := &models.Profile {
+		UserId: id,
+		Name : profile.Name,
+		Email: profile.Email,
+		PassWord: profile.PassWord,
+		Job: job,
+		ProfileMessage:message,
+	}
+
+	profileInsert := structs.Map(newProfile)
+	
+    // mudar aqui que o updateOne tem mais um parametro que acho que é o codigo de qual é pra atualizar
+	// que provavelmente será o id.
+
+	_, err := storage.GetInstance().UpdateOne(ctx,"profile",profileInsert)
 	if err != nil {
 		return ctx.String(403,"Create New Profile: problem to insert into MongoDB")
 	}
