@@ -27,9 +27,15 @@ func main() {
 	}
 
   // handler
-	MovieWorkNowHandler := e.Group("/profile")
-	MovieWorkNowHandler.GET("/name/:name/email/:email/password/:password", handlers.CreateProfile)
-  MovieWorkNowHandler.GET("/id/:id/job/:job/message/:message", handlers.AddInformation)
+	profile := e.Group("/profile")
+	profile.GET("/name/:name/email/:email/password/:password", handlers.CreateProfile)
+  profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformation)
+  profile := e.Group("/profileCompanies")
+	profile.GET("/name/:name/email/:email/password/:password", handlers.CreateProfileCompanies)
+  profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformation)
+
+
+
   // Start server
   e.Logger.Fatal(e.Start(":1323"))
 }

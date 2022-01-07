@@ -143,7 +143,8 @@ func (m *mongodbImpl) UpdateOne(ctx echo.Context, collName string, selector map[
 	segment := utils.StartSegmentWithDatastoreProduct(ctx, "Mongo.UpdateOne", newrelic.DatastoreMongoDB, "UpdateOne", collName)
 	defer segment.End()
 
-	updateResult, err := m.client.Database(m.dbName).Collection(collName).UpdateOne(ctx.Request().Context(), selector, update)
+	updateResult, err := m.client.Database(m.dbName).Collection(collName).UpdateOne(ctx.Request().Context(), selector,update)
+	fmt.Println(err)
 	return updateResult, err
 }
 
