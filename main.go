@@ -32,7 +32,7 @@ func main() {
   profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformation)
   profile := e.Group("/profileCompanies")
 	profile.GET("/name/:name/email/:email/password/:password", handlers.CreateProfileCompanies)
-  profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformation)
+  profile.GET("/companieId/:companieId/job/:job/message/:message", handlers.AddInformation)
 
 
 

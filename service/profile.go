@@ -56,7 +56,7 @@ func (m *MovieWorkNowService)AddInformationProfile(ctx echo.Context,id string,jo
 	//existe com aquele id
 	mgoErr := storage.GetInstance().FindOne(ctx, "profile",userId, &profile)
 	if mgoErr != nil {
-		return ctx.String(403,"Add Information Profile: problem to Find by Id into MongoDB")
+		return ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
 	}
 	//pegar profile daquele id.
 

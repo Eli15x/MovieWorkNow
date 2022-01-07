@@ -29,7 +29,7 @@ func GetInstance() Command {
 	return instance
 }
 
-func (m *MovieWorkNowService)CreateNewProfile(ctx echo.Context,name string, email string, password string) error {
+func (m *MovieWorkNowService)CreateNewProfileCompanie(ctx echo.Context,name string, email string, password string) error {
 	profile := &models.Profile {
 		UserId: "1223",
 		Name : name,
@@ -42,21 +42,21 @@ func (m *MovieWorkNowService)CreateNewProfile(ctx echo.Context,name string, emai
 
 	_, err := storage.GetInstance().Insert(ctx,"profile",profileInsert)
 	if err != nil {
-		return ctx.String(403,"Create New Profile: problem to insert into MongoDB")
+		return ctx.String(403,"Create New Profile Companie: problem to insert into MongoDB")
 	}
 
 	return  nil
 }
 
-func (m *MovieWorkNowService)AddInformationProfile(ctx echo.Context,id string,job string, message string) error {
+func (m *MovieWorkNowService)AddInformationProfileCompanie(ctx echo.Context,id string,job string, message string) error {
 	var profile models.Profile
 
-	userId := map[string]interface{}{"UserId": id}
+	CompanieId := map[string]interface{}{"CompanieId": id}
 
 	//existe com aquele id
-	mgoErr := storage.GetInstance().FindOne(ctx, "profile",userId, &profile)
+	mgoErr := storage.GetInstance().FindOne(ctx, "profileCompanie",CompanieId, &profile)
 	if mgoErr != nil {
-		return ctx.String(403,"Add Information Profile: problem to Find by Id into MongoDB")
+		return ctx.String(403,"Add Information Profile Companie: problem to Find CompanieId into MongoDB")
 	}
 	//pegar profile daquele id.
 
@@ -70,9 +70,9 @@ func (m *MovieWorkNowService)AddInformationProfile(ctx echo.Context,id string,jo
 
 	change := bson.M{"$set": profileUpdate}
 
-	_, err := storage.GetInstance().UpdateOne(ctx,"profile",userId,change)
+	_, err := storage.GetInstance().UpdateOne(ctx,"profileCompanie",CompanieId,change)
 	if err != nil {
-		return ctx.String(403,"Create New Profile: problem to update into MongoDB")
+		return ctx.String(403,"Add information Profile Companie: problem to update into MongoDB")
 	}
 
 	return  nil

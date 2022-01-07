@@ -11,11 +11,6 @@ func CreateProfileCompanies(c echo.Context) error {
 	name := c.Param("name")
 	email := c.Param("email")
 	password := c.Param("password")
-	//birthDate, err := time.Parse("YYYY-MM-DD",c.Param("birthDate"))
-
-	/*if err != nil {
-		return c.String(403,"Create Profile Error: data format")
-	}*/
 
 	if name == "" {
 		return c.String(403,"Create Profile Error: name not find")
@@ -28,15 +23,6 @@ func CreateProfileCompanies(c echo.Context) error {
 	if password == "" {
 		return c.String(403,"Create Profile Error: password not find")
 	}
-
-
-	//ver qual o melhor caso, deixar no models como uma string a data inserir a data como string
-	//no banco e quando for manipular o dado pegar e transformar em time.Time
-	//ou já pegar o valor do context e transformar em data e salvar no banco como data.
-	//validate data
-	/*if birthDate == "" {
-		return c.String(403,"Create Profile Error: birthDate not find")
-	}*/
 
 	err := service.GetInstance().CreateNewProfile(c,name,email,password)
 	if err != nil{
