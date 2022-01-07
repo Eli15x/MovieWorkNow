@@ -4,13 +4,15 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"github.com/Eli15x/MovieWorkNow/service"
+	"fmt"
 )
 
-func CreateProfileCompanies(c echo.Context) error {
+func CreateProfile(c echo.Context) error {
 
 	name := c.Param("name")
 	email := c.Param("email")
 	password := c.Param("password")
+	fmt.Println("entrou")
 
 	if name == "" {
 		return c.String(403,"Create Profile Error: name not find")
@@ -24,7 +26,7 @@ func CreateProfileCompanies(c echo.Context) error {
 		return c.String(403,"Create Profile Error: password not find")
 	}
 
-	err := service.GetInstance().CreateNewProfile(c,name,email,password)
+	err := service.GetInstanceProfile().CreateNewProfile(c,name,email,password)
 	if err != nil{
 		return c.String(403,"Create Profile error: error in service")
 	}
@@ -51,7 +53,7 @@ func AddInformation(c echo.Context) error {
 		return c.String(403,"Create Profile Error: message not find")
 	}
 
-	err := service.GetInstance().AddInformationProfile(c,id,job,message)
+	err := service.GetInstanceProfile().AddInformationProfile(c,id,job,message)
 	if err != nil{
 		return c.String(403,"Create Profile error: error in service")
 	}

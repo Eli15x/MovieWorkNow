@@ -11,25 +11,25 @@ import (
 )
 
 var (
-	instance Command
-	once     sync.Once
+	instanceProfile CommandProfile
+	onceProfile     sync.Once
 )
 
-type Command interface {
+type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfile(ctx echo.Context,id string,job string, message string) error
 }
 
-type MovieWorkNowService struct{}
+type profile struct{}
 
-func GetInstance() Command {
-	once.Do(func() {
-		instance = &MovieWorkNowService{}
+func GetInstanceProfile() CommandProfile {
+	onceProfile.Do(func() {
+		instanceProfile = &profile{}
 	})
-	return instance
+	return instanceProfile
 }
 
-func (m *MovieWorkNowService)CreateNewProfile(ctx echo.Context,name string, email string, password string) error {
+func (p *profile)CreateNewProfile(ctx echo.Context,name string, email string, password string) error {
 	profile := &models.Profile {
 		UserId: "1223",
 		Name : name,
@@ -48,7 +48,7 @@ func (m *MovieWorkNowService)CreateNewProfile(ctx echo.Context,name string, emai
 	return  nil
 }
 
-func (m *MovieWorkNowService)AddInformationProfile(ctx echo.Context,id string,job string, message string) error {
+func (p *profile)AddInformationProfile(ctx echo.Context,id string,job string, message string) error {
 	var profile models.Profile
 
 	userId := map[string]interface{}{"UserId": id}

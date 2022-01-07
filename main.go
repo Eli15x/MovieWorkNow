@@ -30,9 +30,9 @@ func main() {
 	profile := e.Group("/profile")
 	profile.GET("/name/:name/email/:email/password/:password", handlers.CreateProfile)
   profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformation)
-  profile := e.Group("/profileCompanies")
-	profile.GET("/name/:name/email/:email/password/:password", handlers.CreateProfileCompanies)
-  profile.GET("/companieId/:companieId/job/:job/message/:message", handlers.AddInformation)
+  profileCompanie := e.Group("/profileCompanie")
+	profileCompanie.GET("/name/:name/email/:email/password/:password", handlers.CreateProfileCompanie)
+  profileCompanie.GET("/companieId/:companieId/job/:job/message/:message", handlers.AddInformationCompanie)
 
 
 
