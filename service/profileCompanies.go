@@ -58,8 +58,6 @@ func (m *MovieWorkNowService)AddInformationProfileCompanie(ctx echo.Context,id s
 	if mgoErr != nil {
 		return ctx.String(403,"Add Information Profile Companie: problem to Find CompanieId into MongoDB")
 	}
-	//pegar profile daquele id.
-
 
 	profileUpdate := map[string]interface{} {
 		"Job": job,
