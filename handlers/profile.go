@@ -1,10 +1,12 @@
 package handlers
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
-	"github.com/Eli15x/MovieWorkNow/service"
 	"fmt"
+
+	"github.com/Eli15x/MovieWorkNow/service"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 func CreateProfile(c echo.Context) error {
@@ -60,4 +62,30 @@ func AddInformation(c echo.Context) error {
 
 	return c.String(http.StatusOK, "Ok")
 }
+
+func GetInformationByUserId(c echo.Context) error {
+
+	id := c.Param("id")
+
+
+	if id == "" {
+		return c.String(403,"Create Profile Error: id not find")
+	}
+
+	profile, err := service.GetInstanceProfile().GetInformation(c,id)
+	if err != nil{
+		return c.String(403,"Create Profile error: error in service")
+	}
+
+	log.Infof("[GetInformation] UserId: %s Email: %s Name: %t "+
+		"test: %+v\n", profile.UserId, profile.Email, profile.Name, "")
+
+	return c.JSON(http.StatusOK, profile)	
+}
+
+
+
+
+
+
 

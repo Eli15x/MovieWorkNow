@@ -18,6 +18,7 @@ var (
 type CommandProfileCompanie interface {
 	CreateNewProfileCompanie(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfileCompanie(ctx echo.Context,id string,job string, message string) error
+	
 }
 
 type profileCompanie struct{}

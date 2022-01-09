@@ -18,6 +18,7 @@ var (
 type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfile(ctx echo.Context,id string,job string, message string) error
+	GetInformation(ctx echo.Context,id string) (models.Profile, error)
 }
 
 type profile struct{}
@@ -75,3 +76,30 @@ func (p *profile)AddInformationProfile(ctx echo.Context,id string,job string, me
 
 	return  nil
 }
+
+func (p *profile)GetInformation(ctx echo.Context,id string) (models.Profile, error){
+	var profile models.Profile
+
+	userId := map[string]interface{}{"UserId": id}
+
+	//existe com aquele id
+	mgoErr := storage.GetInstance().Find(ctx, "profile",userId, &profile)
+	if mgoErr != nil {
+		return profile, ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
+	}
+
+	profileResult := models.Profile{
+		UserId: "1223",
+		Name : profile.Name,
+		Email: profile.Email,
+		PassWord: profile.PassWord,
+		BirthDate: profile.BirthDate,
+		Job: profile.Job,
+		ProfileMessage:profile.ProfileMessage,
+		Experience: profile.Experience,
+	}
+
+	return profileResult, nil
+}
+
+
