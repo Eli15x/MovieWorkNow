@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/Eli15x/MovieWorkNow/storage"
 	"github.com/Eli15x/MovieWorkNow/models"
+	"github.com/Eli15x/MovieWorkNow/repository"
 	"go.mongodb.org/mongo-driver/bson"
 	"github.com/fatih/structs"
 )
@@ -83,23 +84,25 @@ func (p *profile)GetInformation(ctx echo.Context,id string) (models.Profile, err
 	userId := map[string]interface{}{"UserId": id}
 
 	//existe com aquele id
-	mgoErr := storage.GetInstance().Find(ctx, "profile",userId, &profile)
-	if mgoErr != nil {
-		return profile, ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
+	result, err := repository.Find(ctx, "profile",userId, &profile)
+	if err != nil {
+		return models.Profile{}, ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
 	}
 
-	profileResult := models.Profile{
+	fmt.Println(result)
+
+	/*	profileResult := models.Profile{
 		UserId: "1223",
-		Name : profile.Name,
-		Email: profile.Email,
-		PassWord: profile.PassWord,
-		BirthDate: profile.BirthDate,
-		Job: profile.Job,
-		ProfileMessage:profile.ProfileMessage,
-		Experience: profile.Experience,
-	}
+		Name : cursor.Name,
+		Email: cursor.Email,
+		PassWord: cursor.PassWord,
+		BirthDate: cursor.BirthDate,
+		Job: cursor.Job,
+		ProfileMessage:cursor.ProfileMessage,
+		Experience: cursor.Experience,
+	} */
 
-	return profileResult, nil
+	return models.Profile{}, nil
 }
 
 

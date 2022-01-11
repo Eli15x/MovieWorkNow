@@ -2,8 +2,6 @@ package storage
 
 import (
 	"context"
-	"errors"
-	"reflect"
 	"sync"
 	"time"
 	"fmt"
@@ -23,7 +21,7 @@ var (
 
 type MongoDB interface {
 	Insert(ctx echo.Context, collName string, doc interface{}) (interface{}, error)
-	Find(ctx echo.Context, collName string, query map[string]interface{}, doc interface{}) error
+	Find(ctx echo.Context, collName string, query map[string]interface{}, doc interface{}) (*mongo.Cursor, error)
 	FindOne(ctx echo.Context, collName string, query map[string]interface{}, doc interface{}) error
 	Count(ctx echo.Context, collName string, query map[string]interface{}) (int64, error)
 	UpdateOne(ctx echo.Context, collName string, query map[string]interface{}, doc interface{}) (*mongo.UpdateResult, error)
@@ -93,40 +91,17 @@ func (m *mongodbImpl) Insert(ctx echo.Context, collName string, doc interface{})
 }
 
 // Find finds all documents in the collection
-func (m *mongodbImpl) Find(echoCtx echo.Context, collName string, query map[string]interface{}, doc interface{}) error {
+func (m *mongodbImpl) Find(echoCtx echo.Context, collName string, query map[string]interface{}, doc interface{}) (*mongo.Cursor, error) {
 	ctx := echoCtx.Request().Context()
 	segment := utils.StartSegmentWithDatastoreProduct(echoCtx, "Mongo.Find", newrelic.DatastoreMongoDB, "Find", collName)
 	defer segment.End()
 
 	cur, err := m.client.Database(m.dbName).Collection(collName).Find(ctx, query)
 	if err != nil {
-		return err
+		return nil ,err
 	}
 
-	resultv := reflect.ValueOf(doc)
-	if resultv.Kind() != reflect.Ptr || resultv.Elem().Kind() != reflect.Slice {
-		return errors.New("failed to return array response")
-	}
-
-	slicev := resultv.Elem()
-	slicev = slicev.Slice(0, slicev.Cap())
-	elem := slicev.Type().Elem()
-
-	i := 0
-	defer cur.Close(ctx)
-	for cur.Next(ctx) {
-		elemp := reflect.New(elem)
-		err := cur.Decode(elemp.Interface())
-		if err != nil {
-			return err
-		}
-		slicev = reflect.Append(slicev, elemp.Elem())
-		slicev = slicev.Slice(0, slicev.Cap())
-		i++
-	}
-
-	resultv.Elem().Set(slicev.Slice(0, i))
-	return nil
+	return cur,nil
 }
 
 // FindOne finds one document in mongo
