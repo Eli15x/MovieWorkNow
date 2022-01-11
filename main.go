@@ -29,11 +29,12 @@ func main() {
   // handler
 	profile := e.Group("/profile")
 	profile.GET("/name/:name/email/:email/password/:password", handlers.CreateProfile)
-  profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformation)
-  profile.GET("/id/:id", handlers.GetInformationByUserId)
+  profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformationProfile)
+  profile.GET("/id/:id", handlers.GetInformationByUserIdProfile)
   profileCompanie := e.Group("/profileCompanie")
 	profileCompanie.GET("/name/:name/email/:email/password/:password", handlers.CreateProfileCompanie)
-  profileCompanie.GET("/companieId/:companieId/job/:job/message/:message", handlers.AddInformationCompanie)
+  profileCompanie.GET("/companieId/:companieId/job/:job/message/:message", handlers.AddInformationProfileCompanie)
+  profileCompanie.GET("/id/:id", handlers.GetInformationByUserIdProfileCompanie)
 
 
 

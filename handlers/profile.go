@@ -36,7 +36,7 @@ func CreateProfile(c echo.Context) error {
 	return c.String(http.StatusOK, "Ok")
 }
 
-func AddInformation(c echo.Context) error {
+func AddInformationProfile(c echo.Context) error {
 
 	id := c.Param("id")
 	job := c.Param("job")
@@ -63,7 +63,7 @@ func AddInformation(c echo.Context) error {
 	return c.String(http.StatusOK, "Ok")
 }
 
-func GetInformationByUserId(c echo.Context) error {
+func GetInformationByUserIdProfile(c echo.Context) error {
 
 	id := c.Param("id")
 
@@ -72,15 +72,14 @@ func GetInformationByUserId(c echo.Context) error {
 		return c.String(403,"Create Profile Error: id not find")
 	}
 
-	profile, err := service.GetInstanceProfile().GetInformation(c,id)
+	result, err := service.GetInstanceProfile().GetInformationProfile(c,id)
 	if err != nil{
 		return c.String(403,"Create Profile error: error in service")
 	}
 
-	log.Infof("[GetInformation] UserId: %s Email: %s Name: %t "+
-		"test: %+v\n", profile.UserId, profile.Email, profile.Name, "")
+	log.Infof("[GetInformation] Object : %s \n", result, "")
 
-	return c.JSON(http.StatusOK, profile)	
+	return c.JSON(http.StatusOK, result)	
 }
 
 

@@ -19,7 +19,7 @@ var (
 type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfile(ctx echo.Context,id string,job string, message string) error
-	GetInformation(ctx echo.Context,id string) (models.Profile, error)
+	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
 }
 
 type profile struct{}
@@ -78,7 +78,7 @@ func (p *profile)AddInformationProfile(ctx echo.Context,id string,job string, me
 	return  nil
 }
 
-func (p *profile)GetInformation(ctx echo.Context,id string) (models.Profile, error){
+func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error){
 	var profile models.Profile
 
 	userId := map[string]interface{}{"UserId": id}
@@ -86,7 +86,7 @@ func (p *profile)GetInformation(ctx echo.Context,id string) (models.Profile, err
 	//existe com aquele id
 	result, err := repository.Find(ctx, "profile",userId, &profile)
 	if err != nil {
-		return models.Profile{}, ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
+		return nil, ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
 	}
 
 	fmt.Println(result)
@@ -102,7 +102,7 @@ func (p *profile)GetInformation(ctx echo.Context,id string) (models.Profile, err
 		Experience: cursor.Experience,
 	} */
 
-	return models.Profile{}, nil
+	return result, nil
 }
 
 

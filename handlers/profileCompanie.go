@@ -1,9 +1,11 @@
 package handlers
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
+	
 	"github.com/Eli15x/MovieWorkNow/service"
+	"github.com/labstack/gommon/log"
+	"github.com/labstack/echo/v4"
 )
 
 func CreateProfileCompanie(c echo.Context) error {
@@ -56,7 +58,7 @@ func CreateProfileCompanie(c echo.Context) error {
 	return c.String(http.StatusOK, "Ok")
 }
 
-func AddInformationCompanie(c echo.Context) error {
+func AddInformationProfileCompanie(c echo.Context) error {
 
 	companieId := c.Param("companieId")
 	job := c.Param("job")
@@ -81,5 +83,24 @@ func AddInformationCompanie(c echo.Context) error {
 	}
 
 	return c.String(http.StatusOK, "Ok")
+}
+
+func GetInformationByUserIdProfileCompanie(c echo.Context) error {
+
+	id := c.Param("id")
+
+
+	if id == "" {
+		return c.String(403,"Create Profile Companie Error: id not find")
+	}
+
+	result, err := service.GetInstanceProfileCompanie().GetInformationProfileCompanie(c,id)
+	if err != nil{
+		return c.String(403,"Create Profile Companie error: error in service")
+	}
+
+	log.Infof("[GetInformation] Object : %s \n", result, "")
+
+	return c.JSON(http.StatusOK, result)	
 }
 
