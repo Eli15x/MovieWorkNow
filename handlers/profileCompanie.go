@@ -10,16 +10,6 @@ import (
 )
 
 func CreateProfileCompanie(c echo.Context) error {
-	/*
-	iduser
-	,Nome,email,
-	senha,
-	profilemessage,
-	aniversario,
-	cargo1, cargo2,
-	experiencia
-	*/
-	//o que será colocado na parte de cadastro do usuario serão o nome,email,senha e aniversario.
 
 	name := c.Param("name")
 	email := c.Param("email")
