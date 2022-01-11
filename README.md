@@ -1,13 +1,13 @@
 # Movie Work Now
 
-Movie Work Now é uma plataforma social para trabalho relativo a área de cinema, englobando:
+Movie Work Now é uma rede social para trabalho relativo a área de cinema, englobando:
 Atuação ,roteirização ,filmagem (CameraMan) ,fotografia ,direção de arte, produtores ,Editores....
 
 
 ## Run
 ```sh
 `go run main.go`
-available at: http://localhost:8888
+available at: http://localhost:1323
 ```
 
 ### Rotas
