@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 	"fmt"
-
+    "strings"
 	"github.com/Eli15x/MovieWorkNow/service"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
@@ -55,9 +55,13 @@ func AddInformationProfile(c echo.Context) error {
 		return c.String(403,"Create Profile Error: message not find")
 	}
 
-	err := service.GetInstanceProfile().AddInformationProfile(c,id,job,message)
+	var jobList []string
+
+	jobList = strings.Split(job, "-")
+
+	err := service.GetInstanceProfile().AddInformationProfile(c,id,jobList,message)
 	if err != nil{
-		return c.String(403,"Create Profile error: error in service")
+		return c.String(403,"Add information Profile error: error in service")
 	}
 
 	return c.String(http.StatusOK, "Ok")

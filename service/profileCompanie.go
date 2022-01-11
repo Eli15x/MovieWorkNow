@@ -18,7 +18,7 @@ var (
 
 type CommandProfileCompanie interface {
 	CreateNewProfileCompanie(ctx echo.Context, name string,email string,password string) error
-	AddInformationProfileCompanie(ctx echo.Context,id string,job string, message string) error
+	AddInformationProfileCompanie(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfileCompanie(ctx echo.Context,id string) ([]bson.M, error)
 	
 }
@@ -51,7 +51,7 @@ func (p *profileCompanie)CreateNewProfileCompanie(ctx echo.Context,name string, 
 	return  nil
 }
 
-func (p *profileCompanie)AddInformationProfileCompanie(ctx echo.Context,companieId string,job string, message string) error {
+func (p *profileCompanie)AddInformationProfileCompanie(ctx echo.Context,companieId string,job []string, message string) error {
 	var profileCompanie models.ProfileCompanie
 
 	CompanieId := map[string]interface{}{"CompanieId": companieId}

@@ -18,7 +18,7 @@ var (
 
 type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
-	AddInformationProfile(ctx echo.Context,id string,job string, message string) error
+	AddInformationProfile(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
 }
 
@@ -50,7 +50,7 @@ func (p *profile)CreateNewProfile(ctx echo.Context,name string, email string, pa
 	return  nil
 }
 
-func (p *profile)AddInformationProfile(ctx echo.Context,id string,job string, message string) error {
+func (p *profile)AddInformationProfile(ctx echo.Context,id string,job []string, message string) error {
 	var profile models.Profile
 
 	userId := map[string]interface{}{"UserId": id}

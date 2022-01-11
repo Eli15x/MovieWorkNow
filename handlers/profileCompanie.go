@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 	
 	"github.com/Eli15x/MovieWorkNow/service"
 	"github.com/labstack/gommon/log"
@@ -76,10 +77,13 @@ func AddInformationProfileCompanie(c echo.Context) error {
 	if message == "" {
 		return c.String(403,"Add information Companie Error: message not find")
 	}
+	var jobList []string
 
-	err := service.GetInstanceProfileCompanie().AddInformationProfileCompanie(c,companieId,job,message)
+	jobList = strings.Split(job, "-")
+
+	err := service.GetInstanceProfileCompanie().AddInformationProfileCompanie(c,companieId,jobList,message)
 	if err != nil{
-		return c.String(403,"Add information Companie: error in service")
+		return c.String(403,"Add Information Profile Companie error: error in service")
 	}
 
 	return c.String(http.StatusOK, "Ok")
