@@ -1,7 +1,7 @@
 # Movie Work Now
 
-é uma plataforma social para trabalho para a área de cinema, englobando:
-Atores,roteirizador,CameraMan,fotografo,diretores de arte, produtores,Editores....
+Movie Work Now é uma plataforma social para trabalho relativo a área de cinema, englobando:
+Atuação ,roteirização ,filmagem (CameraMan) ,fotografia ,direção de arte, produtores ,Editores....
 
 
 ## Run
@@ -15,6 +15,5 @@ available at: http://localhost:8888
 // pegar Profile
 curl -X GET 'http://localhost:8888/profile/id/:id' \
 --header 'ID: XXXXX' \
-
 
 ```
