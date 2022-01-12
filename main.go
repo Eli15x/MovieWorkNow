@@ -4,8 +4,8 @@ import (
   "github.com/labstack/echo/v4"
   "github.com/labstack/echo/v4/middleware"
   "net/http"
-  "github.com/Eli15x/MovieWorkNow/storage"
-  "github.com/Eli15x/MovieWorkNow/handlers"
+  "github.com/Eli15x/MovieWorkNow/src/storage"
+  "github.com/Eli15x/MovieWorkNow/src/handlers"
   "context"
   "time"
 )
@@ -13,9 +13,6 @@ import (
 func main() {
   // Echo instance
   e := echo.New()
-  // Middleware
-  e.Use(middleware.Logger())
-  e.Use(middleware.Recover())
 
   //Context
   ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -31,18 +28,12 @@ func main() {
 	profile.GET("/name/:name/email/:email/password/:password", handlers.CreateProfile)
   profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformationProfile)
   profile.GET("/id/:id", handlers.GetInformationByUserIdProfile)
+  profile.GET("/userid_user/:userId_user/userId/:userId", handlers.AddRelationFriend)
   profileCompanie := e.Group("/profileCompanie")
 	profileCompanie.GET("/name/:name/email/:email/password/:password", handlers.CreateProfileCompanie)
   profileCompanie.GET("/companieId/:companieId/job/:job/message/:message", handlers.AddInformationProfileCompanie)
   profileCompanie.GET("/id/:id", handlers.GetInformationByUserIdProfileCompanie)
 
 
-
-  // Start server
   e.Logger.Fatal(e.Start(":1323"))
-}
-
-// Handler
-func hello(c echo.Context) error {
-  return c.String(http.StatusOK, "Hello, World!")
 }
