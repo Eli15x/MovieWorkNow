@@ -22,13 +22,18 @@ var (
 type MongoDB interface {
 	Insert(ctx echo.Context, collName string, doc interface{}) (interface{}, error)
 	Find(ctx echo.Context, collName string, query map[string]interface{}, doc interface{}) (*mongo.Cursor, error)
-	FindOne(ctx echo.Context, collName string, query map[string]interface{}, doc interface{}) error
+	FindOne(ctx echo.Context, collName string, filter interface{}, opts ...*options.FindOneOptions) MongoFindOneResult 
 	Count(ctx echo.Context, collName string, query map[string]interface{}) (int64, error)
 	UpdateOne(ctx echo.Context, collName string, query map[string]interface{}, doc interface{}) (*mongo.UpdateResult, error)
 	Remove(ctx echo.Context, collName string, query map[string]interface{}) error
 	WithTransaction(ctx echo.Context, fn func(context.Context) error) error
 	Initialize(ctx context.Context) error
 	Disconnect()
+}
+
+type MongoFindOneResult interface {
+	Err() error
+	Decode(v interface{}) error
 }
 
 type mongodbImpl struct {
@@ -105,11 +110,10 @@ func (m *mongodbImpl) Find(echoCtx echo.Context, collName string, query map[stri
 }
 
 // FindOne finds one document in mongo
-func (m *mongodbImpl) FindOne(ctx echo.Context, collName string, query map[string]interface{}, doc interface{}) error {
-	segment := utils.StartSegmentWithDatastoreProduct(ctx, "Mongo.FindOne", newrelic.DatastoreMongoDB, "FindOne", collName)
-	defer segment.End()
-
-	return m.client.Database(m.dbName).Collection(collName).FindOne(ctx.Request().Context(), query).Decode(doc)
+func (m *mongodbImpl) FindOne(ctx echo.Context, collName string, filter interface{}, opts ...*options.FindOneOptions) MongoFindOneResult {
+	coll := m.client.Database(m.dbName).Collection(collName)
+	findResult := coll.FindOne(ctx.Request().Context(), filter, )
+	return findResult
 }
 
 // UpdateOne updates one or more documents in the collection

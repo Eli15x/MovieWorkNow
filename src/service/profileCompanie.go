@@ -7,6 +7,7 @@ import (
 	"github.com/Eli15x/MovieWorkNow/src/storage"
 	"github.com/Eli15x/MovieWorkNow/src/models"
 	"github.com/Eli15x/MovieWorkNow/src/repository"
+	"github.com/Eli15x/MovieWorkNow/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"github.com/fatih/structs"
 )
@@ -34,7 +35,7 @@ func GetInstanceProfileCompanie() CommandProfileCompanie {
 
 func (p *profileCompanie)CreateNewProfileCompanie(ctx echo.Context,name string, email string, password string) error {
 	profile := &models.ProfileCompanie {
-		CompanieId: "1223",
+		CompanieId: utils.CreateCodeId(),
 		Name : name,
 		Email: email,
 		PassWord: password,
@@ -52,12 +53,11 @@ func (p *profileCompanie)CreateNewProfileCompanie(ctx echo.Context,name string, 
 }
 
 func (p *profileCompanie)AddInformationProfileCompanie(ctx echo.Context,companieId string,job []string, message string) error {
-	var profileCompanie models.ProfileCompanie
 
 	CompanieId := map[string]interface{}{"CompanieId": companieId}
 
 	//existe com aquele id
-	mgoErr := storage.GetInstance().FindOne(ctx, "profileCompanie",CompanieId, &profileCompanie)
+	mgoErr := storage.GetInstance().FindOne(ctx, "profileCompanie",CompanieId)
 	if mgoErr != nil {
 		return ctx.String(403,"Add Information Profile Companie: problem to Find CompanieId into MongoDB")
 	}
