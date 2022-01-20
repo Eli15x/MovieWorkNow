@@ -21,7 +21,7 @@ type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfile(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
-	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId string) (models.Friend, error)
+	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId string) error
 }
 
 type profile struct{}
@@ -91,25 +91,19 @@ func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, er
 	return result, nil
 }
 
-func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId string) (models.Friend, error){
+func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId string) error{
+	var Friend models.Friend
 	userId_user := map[string]interface{}{"UserId_user": UserId_user}
-	result := storage.GetInstance().FindOne(ctx, "friend",userId_user)
-
-	fmt.Println(result)
-	var test models.Friend
-	if err := result.Decode(&test); err != nil {
-		fmt.Println(err)
-		return test, ctx.String(403,"Add Information Profile: problem into Decode")
+	result, err := repository.Find(ctx, "friend",userId_user,&Friend)
+	//tentar pegar somente o campo UserId[].
+	if err != nil  {
+		return ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
 	}
 
-	account := test.UserId_user
+	fmt.Println(result)
 
 
-	fmt.Println("result")
-	fmt.Println(account)
-
-
-	return test, nil
+	return nil
 }
 
 

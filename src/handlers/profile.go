@@ -125,15 +125,12 @@ func AddRelationFriend(c echo.Context) error {
 		return c.String(403,"Create Profile Error: UserId not find")
 	}
 
-
-	result, err := service.GetInstanceProfile().AddRelationFriendProfile(c,Userid_user,Userid)
+	err := service.GetInstanceProfile().AddRelationFriendProfile(c,Userid_user,Userid)
 	if err != nil{
 		return c.String(403,"Create Profile error: error in service")
 	}
 
-	log.Infof("[GetInformation] Object : %s \n", result, "")
-
-	return c.JSON(http.StatusOK, result)	
+	return c.JSON(http.StatusOK, "ok")	
 }
 
 
