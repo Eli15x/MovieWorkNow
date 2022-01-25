@@ -105,37 +105,55 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,Us
 	mapstructure.Decode(result, &Friend)
 
 
-	var UsersId []models.UserId
+	/*var UsersId []string
 	for _, friend := range Friend.UserId {
+		UsersId = append(UsersId, friend.UserId)
+	}
 
-		newUserIds := &models.UserId{
+	UsersId = append(UsersId, UserId_value)
+	fmt.Println(UsersId)*/
+
+
+	var UsersIds []models.UserId
+	for _, friend := range Friend.UserId {
+		newUserId := &models.UserId{
 			UserId: friend.UserId,
 		}
-		UsersId = append(UsersId, *newUserIds)
+		UsersIds = append(UsersIds,*newUserId)
 	}
 
-	newUserIds := &models.UserId{
+	newUserId := &models.UserId{
 		UserId: UserId_value,
 	}
-	UsersId = append(UsersId, *newUserIds)
-	fmt.Println(UsersId)
+	UsersIds = append(UsersIds, *newUserId)
+	fmt.Println("user")
+	fmt.Println(UsersIds)
+
+
 
 	newFriend := &models.Friend {
 		UserId_user: UserId_user,
-		UserId: UsersId,
+		UserId: UsersIds,
 	}
 
+
+	profileInsert := structs.Map(newFriend)
+	
+
+	_, err = storage.GetInstance().Insert(ctx,"friend",profileInsert)
+	if err != nil {
+		return ctx.String(403,"Create New Profile: problem to insert into MongoDB")
+	}
+	/*fmt.Println("friendupdate")
 	fmt.Println(newFriend)
 
-	newFriendInsert := structs.Map(newFriend)
-	
-	fmt.Println(newFriendInsert)
-	_, err = storage.GetInstance().Insert(ctx,"friend",newFriendInsert)
+	change := bson.M{"$set": newFriend}
+
+	_, err = storage.GetInstance().UpdateOne(ctx,"friend",userId_user,change)
 	if err != nil {
 		return ctx.String(403,"Add Friend Relation: problem to insert into MongoDB")
 	}
-
-
+*/
 	return nil
 }
 
