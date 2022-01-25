@@ -9,6 +9,8 @@ import (
 	"github.com/Eli15x/MovieWorkNow/src/repository"
 	"github.com/Eli15x/MovieWorkNow/utils"
 	"go.mongodb.org/mongo-driver/bson"
+	"github.com/mitchellh/mapstructure"
+
 	"github.com/fatih/structs"
 )
 
@@ -21,7 +23,7 @@ type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfile(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
-	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId string) error
+	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string) error
 }
 
 type profile struct{}
@@ -91,16 +93,47 @@ func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, er
 	return result, nil
 }
 
-func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId string) error{
+func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string) error{
 	var Friend models.Friend
+
 	userId_user := map[string]interface{}{"UserId_user": UserId_user}
 	result, err := repository.Find(ctx, "friend",userId_user,&Friend)
-	//tentar pegar somente o campo UserId[].
-	if err != nil  {
-		return ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
+	if err != nil {
+		return ctx.String(403,"Add Relation Profile: problem to Find Id into MongoDB")
 	}
 
-	fmt.Println(result)
+	mapstructure.Decode(result, &Friend)
+
+
+	var UsersId []models.UserId
+	for _, friend := range Friend.UserId {
+
+		newUserIds := &models.UserId{
+			UserId: friend.UserId,
+		}
+		UsersId = append(UsersId, *newUserIds)
+	}
+
+	newUserIds := &models.UserId{
+		UserId: UserId_value,
+	}
+	UsersId = append(UsersId, *newUserIds)
+	fmt.Println(UsersId)
+
+	newFriend := &models.Friend {
+		UserId_user: UserId_user,
+		UserId: UsersId,
+	}
+
+	fmt.Println(newFriend)
+
+	newFriendInsert := structs.Map(newFriend)
+	
+	fmt.Println(newFriendInsert)
+	_, err = storage.GetInstance().Insert(ctx,"friend",newFriendInsert)
+	if err != nil {
+		return ctx.String(403,"Add Friend Relation: problem to insert into MongoDB")
+	}
 
 
 	return nil

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/Eli15x/MovieWorkNow/src/storage"
 	"github.com/Eli15x/MovieWorkNow/src/models"
 	"github.com/labstack/echo/v4"
@@ -37,9 +38,13 @@ func FindFriend(ctx echo.Context, collName string, query map[string]interface{},
  	}
 
  	var content models.Friend
- 	if err = cursor.All(ctx.Request().Context(), &content); err != nil {
+ 	if err = cursor.All(nil, content); err != nil {
+		 fmt.Println(err)
 		return models.Friend{},ctx.String(403,"Error Repository: Error Get Cursor information mongoDB")
  	}
+
+	 // a ideia era com que essa função retornasse para mim  o retorno que seria um userId_user e uma string de ids que seriam o userId.
+	 // essa ideia tem como questão o agrupamento de ids.
 
  	return content, nil
 }
