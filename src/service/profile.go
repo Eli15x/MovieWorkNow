@@ -35,11 +35,12 @@ func GetInstanceProfile() CommandProfile {
 }
 
 func (p *profile)CreateNewProfile(ctx echo.Context,name string, email string, password string) error {
+	
 	profile := &models.Profile {
 		UserId: utils.CreateCodeId(),
 		Name : name,
 		Email: email,
-		PassWord: password,
+		PassWord: utils.encrypt(password),
 	}
 
 	profileInsert := structs.Map(profile)
@@ -122,7 +123,7 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,Us
 		UserId: UsersIds,
 	}
 
-
+ 
 	FriendUpdate := structs.Map(newFriend)
 
 	change := bson.M{"$set": FriendUpdate}

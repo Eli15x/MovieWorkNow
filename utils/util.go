@@ -2,25 +2,53 @@ package utils
 
 import (
 	"github.com/satori/go.uuid"
+	"crypto/aes"
+	"crypto/cipher"
+	"encoding/hex"
+	"fmt"
 )
 
 func CreateCodeId() string {
 	return uuid.NewV4().String()
 }
 
-func sliceToStrMap(elements []string) map[string]string {
-    elementMap := make(map[string]string)
-    for _, s := range elements {
-        elementMap[s] = s
-    }
-    return elementMap
+func encrypt(code string) string{
+	key := []byte("MovieWorkNow2022")
+	plaintext := []byte(code)
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err.Error())
+	}
+	nonce := []byte("MWN")
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		panic(err.Error())
+	}
+	ciphertext := aesgcm.Seal(nil, nonce, plaintext, nil)
+	fmt.Printf("Ciphertext: %x\n", ciphertext)
+	ciphertextStr := string(ciphertext[:])
+	return ciphertextStr
 }
 
-func sliceToIntMap(elements []string) map[string]int {
-    elementMap := make(map[string]int)
-    for _, s := range elements {
-        elementMap[s]++
-    }
-    return elementMap
+func decrypt(code string) string{
+	key := []byte("MovieWorkNow2022")
+	ciphertext, _ := hex.DecodeString(code)
+	nonce := []byte("MWN")
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err.Error())
+	}
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		panic(err.Error())
+	}
+	plaintext, err := aesgcm.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("Plaintext: %s\n", string(plaintext))
+	plaintextStr := string(plaintext[:])
+	return plaintextStr
 }
+
 
