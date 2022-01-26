@@ -5,6 +5,7 @@ import (
 	"fmt"
     "strings"
 	"github.com/Eli15x/MovieWorkNow/src/service"
+	"github.com/Eli15x/MovieWorkNow/src/models"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 )
@@ -125,7 +126,8 @@ func AddRelationFriend(c echo.Context) error {
 		return c.String(403,"Create Profile Error: UserId not find")
 	}
 
-	err := service.GetInstanceProfile().AddRelationFriendProfile(c,Userid_user,Userid)
+	var friend models.Friend
+	err := service.GetInstanceProfile().AddRelationFriendProfile(c,Userid_user,Userid,&friend)
 	if err != nil{
 		return c.String(403,"Create Profile error: error in service")
 	}

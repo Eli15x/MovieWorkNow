@@ -9,7 +9,6 @@ import (
 	"github.com/Eli15x/MovieWorkNow/src/repository"
 	"github.com/Eli15x/MovieWorkNow/utils"
 	"go.mongodb.org/mongo-driver/bson"
-	"github.com/mitchellh/mapstructure"
 
 	"github.com/fatih/structs"
 )
@@ -23,7 +22,7 @@ type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfile(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
-	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string) error
+	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string, friend *models.Friend) error
 }
 
 type profile struct{}
@@ -93,30 +92,29 @@ func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, er
 	return result, nil
 }
 
-func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string) error{
-	var Friend models.Friend
+func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string, friendUser *models.Friend) error{
 
 	userId_user := map[string]interface{}{"UserId_user": UserId_user}
-	result, err := repository.Find(ctx, "friend",userId_user,&Friend)
-	if err != nil {
-		return ctx.String(403,"Add Relation Profile: problem to Find Id into MongoDB")
-	}
-
-	mapstructure.Decode(result, &Friend)
-
+	result := storage.GetInstance().FindOne(ctx, "friend",userId_user) 
+	
+    err := result.Decode(friendUser)
+    if err != nil {
+		fmt.Println(err)
+		return ctx.String(403,"Error Decode Friend") 
+    }
 
 	var UsersIds []models.UserId
-	for _, friend := range Friend.UserId {
-		newUserId := &models.UserId{
+	for _, friend := range friendUser.UserId {
+		newUserId := models.UserId{
 			UserId: friend.UserId,
 		}
-		UsersIds = append(UsersIds,*newUserId)
+		UsersIds = append(UsersIds,newUserId)
 	}
 
-	newUserId := &models.UserId{
+	newUserId := models.UserId{
 		UserId: UserId_value,
 	}
-	UsersIds = append(UsersIds, *newUserId)
+	UsersIds = append(UsersIds, newUserId)
 
 
 	newFriend := &models.Friend {
