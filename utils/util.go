@@ -12,7 +12,7 @@ func CreateCodeId() string {
 	return uuid.NewV4().String()
 }
 
-func encrypt(code string) string{
+func Encrypt(code string) string{
 	key := []byte("MovieWorkNow2022")
 	plaintext := []byte(code)
 	block, err := aes.NewCipher(key)

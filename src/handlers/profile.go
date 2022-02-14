@@ -136,5 +136,24 @@ func AddRelationFriend(c echo.Context) error {
 }
 
 
+func AddContent(c echo.Context) error {
 
+	userId := c.Param("id")
+	content := c.Param("content")
+
+	if userId == "" {
+		return c.String(403,"AddContent Error: UserId not find")
+	}
+
+	if content == "" {
+		return c.String(403,"AddContent Error: UserId not find")
+	}
+
+	err := service.GetInstanceProfile().AddContent(c,userId,content)
+	if err != nil{
+		return c.String(403,"AddContent error: error in service")
+	}
+
+	return c.JSON(http.StatusOK, "ok")	
+}
 

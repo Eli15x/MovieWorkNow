@@ -29,6 +29,7 @@ func main() {
   profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformationProfile)
   profile.GET("/id/:id", handlers.GetInformationByUserIdProfile)
   profile.GET("/userid_user/:userId_user/userId/:userId", handlers.AddRelationFriend)
+  profile.GET("/id/:id/content/:content", handlers.AddContent)
   profileCompanie := e.Group("/profileCompanie")
 	profileCompanie.GET("/name/:name/email/:email/password/:password", handlers.CreateProfileCompanie)
   profileCompanie.GET("/companieId/:companieId/job/:job/message/:message", handlers.AddInformationProfileCompanie)

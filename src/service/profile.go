@@ -3,6 +3,7 @@ package service
 import (
 	"sync"
 	"fmt"
+	"time"
 	"github.com/labstack/echo/v4"
 	"github.com/Eli15x/MovieWorkNow/src/storage"
 	"github.com/Eli15x/MovieWorkNow/src/models"
@@ -23,6 +24,7 @@ type CommandProfile interface {
 	AddInformationProfile(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
 	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string, friend *models.Friend) error
+	AddContent(ctx echo.Context,id string,content string) error
 }
 
 type profile struct{}
@@ -40,7 +42,7 @@ func (p *profile)CreateNewProfile(ctx echo.Context,name string, email string, pa
 		UserId: utils.CreateCodeId(),
 		Name : name,
 		Email: email,
-		PassWord: utils.encrypt(password),
+		PassWord: utils.Encrypt(password),
 	}
 
 	profileInsert := structs.Map(profile)
@@ -136,5 +138,31 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,Us
 	return nil
 }
 
+func (p *profile)AddContent(ctx echo.Context,id string,content string) error {
+	userId := map[string]interface{}{"UserId": id}
+
+	//existe com aquele id
+	mgoErr := storage.GetInstance().FindOne(ctx, "profile",userId)
+	if mgoErr != nil {
+		return ctx.String(403,"Add Content: problem to Find Id into MongoDB")
+	}
+
+	newContent := &models.Content {
+		ContentId: utils.CreateCodeId(),
+		UserId : id,
+		Content: content,
+		Data: time.Now(),
+	}
+
+	newContentInsert := structs.Map(newContent)
+	
+
+	_, err := storage.GetInstance().Insert(ctx,"content",newContentInsert)
+	if err != nil {
+		return ctx.String(403,"Add Content: problem to update into MongoDB")
+	}
+
+	return  nil
+}
 
 
