@@ -38,7 +38,7 @@ func CreateProfileCompanie(c echo.Context) error {
 
 	err := service.GetInstanceProfileCompanie().CreateNewProfileCompanie(c,name,email,password)
 	if err != nil{
-		return c.String(403,"Create Profile Companie error: error in service")
+		return c.String(403,err.Error())
 	}
 
 	return c.String(http.StatusOK, "Ok")
@@ -68,7 +68,7 @@ func AddInformationProfileCompanie(c echo.Context) error {
 
 	err := service.GetInstanceProfileCompanie().AddInformationProfileCompanie(c,companieId,jobList,message)
 	if err != nil{
-		return c.String(403,"Add Information Profile Companie error: error in service")
+		return c.String(403, err.Error())
 	}
 
 	return c.String(http.StatusOK, "Ok")
@@ -85,7 +85,7 @@ func GetInformationByUserIdProfileCompanie(c echo.Context) error {
 
 	result, err := service.GetInstanceProfileCompanie().GetInformationProfileCompanie(c,id)
 	if err != nil{
-		return c.String(403,"Create Profile Companie error: error in service")
+		return c.String(403, err.Error())
 	}
 
 	log.Infof("[GetInformation] Object : %s \n", result, "")

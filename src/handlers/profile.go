@@ -31,7 +31,7 @@ func CreateProfile(c echo.Context) error {
 
 	err := service.GetInstanceProfile().CreateNewProfile(c,name,email,password)
 	if err != nil{
-		return c.String(400,"Create Profile error: error in service")
+		return c.String(400, err.Error())
 	}
 
 	return c.String(http.StatusOK, "Ok")
@@ -62,7 +62,7 @@ func AddInformationProfile(c echo.Context) error {
 
 	err := service.GetInstanceProfile().AddInformationProfile(c,id,jobList,message)
 	if err != nil{
-		return c.String(403,"Add information Profile error: error in service")
+		return c.String(403,err.Error())
 	}
 
 	return c.String(http.StatusOK, "Ok")
@@ -79,7 +79,7 @@ func GetInformationByUserIdProfile(c echo.Context) error {
 
 	result, err := service.GetInstanceProfile().GetInformationProfile(c,id)
 	if err != nil{
-		return c.String(400,"Create Profile error: error in service")
+		return c.String(400, err.Error())
 	}
 
 	log.Infof("[GetInformation] Object : %s \n", result, "")
@@ -103,7 +103,7 @@ func AddRelationFollow(c echo.Context) error {
 
 	result, err := service.GetInstanceProfile().GetInformationProfile(c,id)
 	if err != nil{
-		return c.String(400,"Create Profile error: error in service")
+		return c.String(400, err.Error())
 	}
 
 	log.Infof("[GetInformation] Object : %s \n", result, "")
@@ -129,7 +129,12 @@ func AddRelationFriend(c echo.Context) error {
 	var friend models.Friend
 	err := service.GetInstanceProfile().AddRelationFriendProfile(c,Userid_user,Userid,&friend)
 	if err != nil{
-		return c.String(403,"Create Profile error: error in service")
+		return c.String(403, err.Error())
+	}
+
+	err = service.GetInstanceProfile().AddRelationFriendProfile(c,Userid,Userid_user,&friend)
+	if err != nil{
+		return c.String(403, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, "ok")	
@@ -151,7 +156,7 @@ func AddContent(c echo.Context) error {
 
 	err := service.GetInstanceProfile().AddContent(c,userId,content)
 	if err != nil{
-		return c.String(400,"AddContent error: error in service")
+		return c.String(400, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, "ok")	

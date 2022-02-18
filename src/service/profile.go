@@ -129,7 +129,6 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,Us
 		UserId: UsersIds,
 	}
 
- 
 	FriendUpdate := structs.Map(newFriend)
 
 	change := bson.M{"$set": FriendUpdate}
