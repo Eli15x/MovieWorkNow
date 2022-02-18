@@ -4,6 +4,7 @@ import (
 	"sync"
 	"fmt"
 	"time"
+	"errors"
 	"github.com/labstack/echo/v4"
 	"github.com/Eli15x/MovieWorkNow/src/storage"
 	"github.com/Eli15x/MovieWorkNow/src/models"
@@ -42,7 +43,7 @@ func (p *profile)CreateNewProfile(ctx echo.Context,name string, email string, pa
 		UserId: utils.CreateCodeId(),
 		Name : name,
 		Email: email,
-		PassWord: utils.Encrypt(password),
+		PassWord: password,
 	}
 
 	profileInsert := structs.Map(profile)
@@ -50,7 +51,7 @@ func (p *profile)CreateNewProfile(ctx echo.Context,name string, email string, pa
 
 	_, err := storage.GetInstance().Insert(ctx,"profile",profileInsert)
 	if err != nil {
-		return ctx.String(403,"Create New Profile: problem to insert into MongoDB")
+		return errors.New("Create New Profile: problem to insert into MongoDB")
 	}
 
 	return  nil
@@ -62,7 +63,7 @@ func (p *profile)AddInformationProfile(ctx echo.Context,id string,job []string, 
 	//existe com aquele id
 	mgoErr := storage.GetInstance().FindOne(ctx, "profile",userId)
 	if mgoErr != nil {
-		return ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
+		return errors.New("Add Information Profile: problem to Find Id into MongoDB")
 	}
 
 	profileUpdate := map[string]interface{} {
@@ -76,7 +77,7 @@ func (p *profile)AddInformationProfile(ctx echo.Context,id string,job []string, 
 
 	_, err := storage.GetInstance().UpdateOne(ctx,"profile",userId,change)
 	if err != nil {
-		return ctx.String(403,"Create New Profile: problem to update into MongoDB")
+		return errors.New("Create New Profile: problem to update into MongoDB")
 	}
 
 	return  nil
@@ -89,7 +90,7 @@ func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, er
 
 	result, err := repository.Find(ctx, "profile",userId, &profile)
 	if err != nil {
-		return nil, ctx.String(403,"Add Information Profile: problem to Find Id into MongoDB")
+		return nil, errors.New("Add Information Profile: problem to Find Id into MongoDB")
 	}
 
 	return result, nil
@@ -103,11 +104,14 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,Us
     err := result.Decode(friendUser)
     if err != nil {
 		fmt.Println(err)
-		return ctx.String(403,"Error Decode Friend") 
+		return errors.New("Error Decode Friend") 
     }
 
 	var UsersIds []models.UserId
 	for _, friend := range friendUser.UserId {
+		if friend.UserId == UserId_value {
+			return errors.New("Error User is already friend")
+		}
 		newUserId := models.UserId{
 			UserId: friend.UserId,
 		}
@@ -132,7 +136,7 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,Us
 
 	_, err = storage.GetInstance().UpdateOne(ctx,"friend",userId_user,change)
 	if err != nil {
-		return ctx.String(403,"Add Friend Relation: problem to insert into MongoDB")
+		return errors.New("Add Friend Relation: problem to insert into MongoDB")
 	}
 
 	return nil
@@ -144,7 +148,7 @@ func (p *profile)AddContent(ctx echo.Context,id string,content string) error {
 	//existe com aquele id
 	mgoErr := storage.GetInstance().FindOne(ctx, "profile",userId)
 	if mgoErr != nil {
-		return ctx.String(403,"Add Content: problem to Find Id into MongoDB")
+		return errors.New("Add Content: problem to Find Id into MongoDB")
 	}
 
 	newContent := &models.Content {
@@ -159,7 +163,7 @@ func (p *profile)AddContent(ctx echo.Context,id string,content string) error {
 
 	_, err := storage.GetInstance().Insert(ctx,"content",newContentInsert)
 	if err != nil {
-		return ctx.String(403,"Add Content: problem to update into MongoDB")
+		return errors.New("Add Content: problem to update into MongoDB")
 	}
 
 	return  nil

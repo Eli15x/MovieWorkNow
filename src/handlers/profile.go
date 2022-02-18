@@ -18,20 +18,20 @@ func CreateProfile(c echo.Context) error {
 	fmt.Println("entrou")
 
 	if name == "" {
-		return c.String(403,"Create Profile Error: name not find")
+		return c.String(400,"Create Profile Error: name not find")
 	}
 
 	if email == "" {
-		return c.String(403,"Create Profile Error: email not find")
+		return c.String(400,"Create Profile Error: email not find")
 	}
 
 	if password == "" {
-		return c.String(403,"Create Profile Error: password not find")
+		return c.String(400,"Create Profile Error: password not find")
 	}
 
 	err := service.GetInstanceProfile().CreateNewProfile(c,name,email,password)
 	if err != nil{
-		return c.String(403,"Create Profile error: error in service")
+		return c.String(400,"Create Profile error: error in service")
 	}
 
 	return c.String(http.StatusOK, "Ok")
@@ -45,15 +45,15 @@ func AddInformationProfile(c echo.Context) error {
 
 
 	if id == "" {
-		return c.String(403,"Create Profile Error: id not find")
+		return c.String(400,"Create Profile Error: id not find")
 	}
 
 	if job == "" {
-		return c.String(403,"Create Profile Error: job not find")
+		return c.String(400,"Create Profile Error: job not find")
 	}
 
 	if message == "" {
-		return c.String(403,"Create Profile Error: message not find")
+		return c.String(400,"Create Profile Error: message not find")
 	}
 
 	var jobList []string
@@ -74,12 +74,12 @@ func GetInformationByUserIdProfile(c echo.Context) error {
 
 
 	if id == "" {
-		return c.String(403,"Create Profile Error: id not find")
+		return c.String(400,"Create Profile Error: id not find")
 	}
 
 	result, err := service.GetInstanceProfile().GetInformationProfile(c,id)
 	if err != nil{
-		return c.String(403,"Create Profile error: error in service")
+		return c.String(400,"Create Profile error: error in service")
 	}
 
 	log.Infof("[GetInformation] Object : %s \n", result, "")
@@ -94,16 +94,16 @@ func AddRelationFollow(c echo.Context) error {
 
 
 	if id == "" {
-		return c.String(403,"Create Profile Error: id not find")
+		return c.String(400,"Create Profile Error: id not find")
 	}
 
 	if companieId == "" {
-		return c.String(403,"Create Profile Error: id not find")
+		return c.String(400,"Create Profile Error: id not find")
 	}
 
 	result, err := service.GetInstanceProfile().GetInformationProfile(c,id)
 	if err != nil{
-		return c.String(403,"Create Profile error: error in service")
+		return c.String(400,"Create Profile error: error in service")
 	}
 
 	log.Infof("[GetInformation] Object : %s \n", result, "")
@@ -119,11 +119,11 @@ func AddRelationFriend(c echo.Context) error {
 
 
 	if Userid_user == "" {
-		return c.String(403,"Create Profile Error: UserId_user not find")
+		return c.String(400,"Create Profile Error: UserId_user not find")
 	}
 
 	if Userid == "" {
-		return c.String(403,"Create Profile Error: UserId not find")
+		return c.String(400,"Create Profile Error: UserId not find")
 	}
 
 	var friend models.Friend
@@ -142,16 +142,16 @@ func AddContent(c echo.Context) error {
 	content := c.Param("content")
 
 	if userId == "" {
-		return c.String(403,"AddContent Error: UserId not find")
+		return c.String(400,"AddContent Error: UserId not find")
 	}
 
 	if content == "" {
-		return c.String(403,"AddContent Error: UserId not find")
+		return c.String(400,"AddContent Error: UserId not find")
 	}
 
 	err := service.GetInstanceProfile().AddContent(c,userId,content)
 	if err != nil{
-		return c.String(403,"AddContent error: error in service")
+		return c.String(400,"AddContent error: error in service")
 	}
 
 	return c.JSON(http.StatusOK, "ok")	

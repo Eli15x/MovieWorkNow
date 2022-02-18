@@ -14,5 +14,5 @@ require (
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/thoas/go-funk v0.9.1 // indirect
-	go.uber.org/zap v1.20.0 // indirect
+	go.uber.org/zap v1.20.0
 )
