@@ -114,25 +114,25 @@ func AddRelationFollow(c echo.Context) error {
 
 func AddRelationFriend(c echo.Context) error {
 
-	Userid_user := c.Param("userId_user")
-	Userid := c.Param("userId")
+	UserId := c.Param("userid")
+	FriendId := c.Param("friendid")
 
 
-	if Userid_user == "" {
+	if UserId == "" {
 		return c.String(400,"Create Profile Error: UserId_user not find")
 	}
 
-	if Userid == "" {
+	if FriendId == "" {
 		return c.String(400,"Create Profile Error: UserId not find")
 	}
 
 	var friend models.Friend
-	err := service.GetInstanceProfile().AddRelationFriendProfile(c,Userid_user,Userid,&friend)
+	err := service.GetInstanceProfile().AddRelationFriendProfile(c,UserId,FriendId,&friend)
 	if err != nil{
 		return c.String(403, err.Error())
 	}
 
-	err = service.GetInstanceProfile().AddRelationFriendProfile(c,Userid,Userid_user,&friend)
+	err = service.GetInstanceProfile().AddRelationFriendProfile(c,FriendId,UserId,&friend)
 	if err != nil{
 		return c.String(403, err.Error())
 	}
