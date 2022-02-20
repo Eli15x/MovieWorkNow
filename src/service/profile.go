@@ -39,8 +39,9 @@ func GetInstanceProfile() CommandProfile {
 
 func (p *profile)CreateNewProfile(ctx echo.Context,name string, email string, password string) error {
 	
+	var userId = utils.CreateCodeId()
 	profile := &models.Profile {
-		UserId: utils.CreateCodeId(),
+		UserId: userId,
 		Name : name,
 		Email: email,
 		PassWord: password,
@@ -48,10 +49,14 @@ func (p *profile)CreateNewProfile(ctx echo.Context,name string, email string, pa
 
 	profileInsert := structs.Map(profile)
 	
-
 	_, err := storage.GetInstance().Insert(ctx,"profile",profileInsert)
 	if err != nil {
 		return errors.New("Create New Profile: problem to insert into MongoDB")
+	}
+
+	err = CreateFriendTable(ctx,userId)
+	if err != nil {
+		return err
 	}
 
 	return  nil
@@ -139,6 +144,26 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId string,FriendI
 	}
 
 	return nil
+}
+
+func CreateFriendTable(ctx echo.Context,userId string) error {
+
+	var UsersIds []models.UserId
+
+	friend := &models.Friend {
+		UserId: userId,
+		FriendIds : UsersIds,
+	}
+
+	FriendInsert := structs.Map(friend)
+	
+
+	_, err := storage.GetInstance().Insert(ctx,"friend",FriendInsert)
+	if err != nil {
+		return errors.New("Create Friend Table: problem to insert into MongoDB")
+	}
+
+	return  nil
 }
 
 func (p *profile)AddContent(ctx echo.Context,id string,content string) error {

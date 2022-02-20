@@ -1,5 +1,5 @@
 package models
 
 type UserId struct {
-	UserId              string    `json:"userId,omitempty" bson:"UserId"`
+	UserId              string    `json:"UserId,omitempty" bson:"UserId"`
 }

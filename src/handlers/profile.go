@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"fmt"
     "strings"
 	"github.com/Eli15x/MovieWorkNow/src/service"
 	"github.com/Eli15x/MovieWorkNow/src/models"
@@ -15,7 +14,6 @@ func CreateProfile(c echo.Context) error {
 	name := c.Param("name")
 	email := c.Param("email")
 	password := c.Param("password")
-	fmt.Println("entrou")
 
 	if name == "" {
 		return c.String(400,"Create Profile Error: name not find")
@@ -33,6 +31,7 @@ func CreateProfile(c echo.Context) error {
 	if err != nil{
 		return c.String(400, err.Error())
 	}
+	
 
 	return c.String(http.StatusOK, "Ok")
 }
