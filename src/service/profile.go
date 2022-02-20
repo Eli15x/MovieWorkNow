@@ -96,10 +96,10 @@ func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, er
 	return result, nil
 }
 
-func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string, friendUser *models.Friend) error{
+func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId string,FriendId string, friendUser *models.Friend) error{
 
-	userId_user := map[string]interface{}{"UserId_user": UserId_user}
-	result := storage.GetInstance().FindOne(ctx, "friend",userId_user) 
+	userId := map[string]interface{}{"UserId": UserId}
+	result := storage.GetInstance().FindOne(ctx, "FriendId",userId) 
 	
     err := result.Decode(friendUser)
     if err != nil {
@@ -108,8 +108,8 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,Us
     }
 
 	var UsersIds []models.UserId
-	for _, friend := range friendUser.UserId {
-		if friend.UserId == UserId_value {
+	for _, friend := range friendUser.FriendIds {
+		if friend.UserId == FriendId {
 			return errors.New("Error User is already friend")
 		}
 		newUserId := models.UserId{
@@ -119,21 +119,21 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId_user string,Us
 	}
 
 	newUserId := models.UserId{
-		UserId: UserId_value,
+		UserId: FriendId,
 	}
 	UsersIds = append(UsersIds, newUserId)
 
 
 	newFriend := &models.Friend {
-		UserId_user: UserId_user,
-		UserId: UsersIds,
+		UserId: UserId,
+		FriendIds: UsersIds,
 	}
 
 	FriendUpdate := structs.Map(newFriend)
 
 	change := bson.M{"$set": FriendUpdate}
 
-	_, err = storage.GetInstance().UpdateOne(ctx,"friend",userId_user,change)
+	_, err = storage.GetInstance().UpdateOne(ctx,"friend",userId,change)
 	if err != nil {
 		return errors.New("Add Friend Relation: problem to insert into MongoDB")
 	}

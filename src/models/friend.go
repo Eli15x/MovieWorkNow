@@ -1,6 +1,6 @@
 package models
 
 type Friend struct {
-	UserId_user         string    `json:"userId_user,omitempty" bson:"UserId_user,omitempty"`
-	UserId              []UserId   `json:"userId,omitempty" bson:"UserId"`
+	UserId         string    `json:"UserId,omitempty" bson:"UserId_user,omitempty"`
+	FriendIds      []UserId   `json:"FriendIds,omitempty" bson:"FriendIds"`
 }
