@@ -139,6 +139,30 @@ func AddRelationFriend(c echo.Context) error {
 	return c.JSON(http.StatusOK, "ok")	
 }
 
+func AddRequestFriend(c echo.Context) error {
+
+	UserId := c.Param("userid")
+	FriendId := c.Param("friendid")
+
+
+	if UserId == "" {
+		return c.String(400,"Create Profile Error: UserId_user not find")
+	}
+
+	if FriendId == "" {
+		return c.String(400,"Create Profile Error: UserId not find")
+	}
+
+	var friend models.Friend
+	err := service.GetInstanceProfile().AddRequestFriend(c,UserId,FriendId,&friend)
+	if err != nil{
+		return c.String(403, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "ok")	
+}
+
+
 
 func AddContent(c echo.Context) error {
 

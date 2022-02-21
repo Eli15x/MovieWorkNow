@@ -25,6 +25,8 @@ type CommandProfile interface {
 	AddInformationProfile(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
 	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string, friend *models.Friend) error
+	AddRequestFriend(ctx echo.Context,UserId string,FriendId string, friendUser *models.Friend) error
+	DeleteFriendRequest(ctx echo.Context,UserId string, FriendId string, friendUser *models.Friend) error
 	AddContent(ctx echo.Context,id string,content string) error
 }
 
@@ -138,9 +140,97 @@ func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId string,FriendI
 
 	change := bson.M{"$set": FriendUpdate}
 
+	err = p.DeleteFriendRequest(ctx,UserId,FriendId,friendUser)
+	if err != nil {
+		return err
+	}
+
 	_, err = storage.GetInstance().UpdateOne(ctx,"friend",userId,change)
 	if err != nil {
-		return errors.New("Add Friend Relation: problem to insert into MongoDB")
+		return errors.New("Add Friend Relation: problem to update into MongoDB")
+	}
+
+	return nil
+}
+
+func (p *profile)AddRequestFriend(ctx echo.Context,UserId string,FriendId string, friendUser *models.Friend) error{
+
+	userId := map[string]interface{}{"UserId": UserId}
+	result := storage.GetInstance().FindOne(ctx, "FriendId",userId) 
+	
+    err := result.Decode(friendUser)
+    if err != nil {
+		fmt.Println(err)
+		return errors.New("Error Decode Friend") 
+    }
+
+	var UsersIds []models.UserId
+	for _, friend := range friendUser.FriendRequests {
+		if friend.UserId == FriendId {
+			return errors.New("Error User already have a request")
+		}
+		newUserId := models.UserId{
+			UserId: friend.UserId,
+		}
+		UsersIds = append(UsersIds,newUserId)
+	}
+
+	newUserId := models.UserId{
+		UserId: FriendId,
+	}
+	UsersIds = append(UsersIds, newUserId)
+
+
+	newFriend := &models.Friend {
+		UserId: UserId,
+		FriendRequests: UsersIds,
+	}
+
+	FriendUpdate := structs.Map(newFriend)
+
+	change := bson.M{"$set": FriendUpdate}
+
+	_, err = storage.GetInstance().UpdateOne(ctx,"friend",userId,change)
+	if err != nil {
+		return errors.New("Add Friend Relation: problem to update into MongoDB")
+	}
+
+	return nil
+}
+
+func (p *profile)DeleteFriendRequest(ctx echo.Context,UserId string, FriendId string, friendUser *models.Friend) error {
+
+	userId := map[string]interface{}{"UserId": UserId}
+	result := storage.GetInstance().FindOne(ctx, "FriendId",userId) 
+	
+    err := result.Decode(friendUser)
+    if err != nil {
+		fmt.Println(err)
+		return errors.New("Error Decode Friend") 
+    }
+
+	var UsersIds []models.UserId
+	for _, friend := range friendUser.FriendRequests {
+		if friend.UserId != FriendId {
+		  newUserId := models.UserId{
+	      UserId: friend.UserId,
+		}
+		  UsersIds = append(UsersIds,newUserId)
+		}
+	}
+
+	newFriend := &models.Friend {
+		UserId: UserId,
+		FriendRequests: UsersIds,
+	}
+
+	FriendUpdate := structs.Map(newFriend)
+
+	change := bson.M{"$set": FriendUpdate}
+
+	_, err = storage.GetInstance().UpdateOne(ctx,"friend",userId,change)
+	if err != nil {
+		return errors.New("Delete Requestion Relation: problem to update into MongoDB")
 	}
 
 	return nil
