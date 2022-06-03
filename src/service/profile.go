@@ -24,6 +24,7 @@ type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfile(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
+	CheckInformationValid(ctx echo.Context,id string) error
 	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string, friend *models.Friend) error
 	AddRequestFriend(ctx echo.Context,UserId string,FriendId string, friendUser *models.Friend) error
 	DeleteFriendRequest(ctx echo.Context,UserId string, FriendId string, friendUser *models.Friend) error
@@ -101,6 +102,19 @@ func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, er
 	}
 
 	return result, nil
+}
+
+func (p *profile)CheckInformationValid(ctx echo.Context,email string, password string) error {
+
+	userInfo := map[string]interface{}{"Email": email , "Password": password}
+
+
+	result, err := repository.Find(ctx, "profile",userInfo, &profile)
+	if err != nil {
+		return nil, errors.New("Check Information: problem to Find user login into MongoDB")
+	}
+
+	return nil
 }
 
 func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId string,FriendId string, friendUser *models.Friend) error{

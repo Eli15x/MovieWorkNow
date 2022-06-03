@@ -162,7 +162,26 @@ func AddRequestFriend(c echo.Context) error {
 	return c.JSON(http.StatusOK, "ok")	
 }
 
+func CheckInformation(c echo.Context) error {
 
+	email := c.Param("email")
+	password := c.Param("password")
+
+	if email == "" {
+		return c.String(400,"AddContent Error: email not find")
+	}
+
+	if password == "" {
+		return c.String(400,"AddContent Error: password not find")
+	}
+
+	err := service.GetInstanceProfile().CheckInformationValid(c,email,password)
+	if err != nil{
+		return c.String(400, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "ok")	
+}
 
 func AddContent(c echo.Context) error {
 
