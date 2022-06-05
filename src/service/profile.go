@@ -106,11 +106,14 @@ func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, er
 
 func (p *profile)CheckInformationValid(ctx echo.Context,email string, password string) error {
 	var profile models.Profile
-	
-	userInfo := map[string]interface{}{"Email": email , "Password": password}
 
+	filter := map[string]interface{}{"Email": email, "PassWord": password}
 
-	_ , err := repository.Find(ctx, "profile",userInfo, &profile)
+	result , err := repository.Find(ctx, "profile", filter, &profile)
+
+	if result == nil {
+		return errors.New("Check Information: user not find")
+	}
 	if err != nil {
 		return errors.New("Check Information: problem to Find user login into MongoDB")
 	}
