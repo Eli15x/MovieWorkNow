@@ -5,12 +5,12 @@ import (
 )
 
 type Profile	 struct {
-	UserId             string    `json:"userId,omitempty" bson:"userId,omitempty"`
-	Name               string    `json:"name,omitempty" bson:"-"`
-	Email              string    `json:"email,omitempty" bson:"-"`
-	PassWord           string    `json:"passWord,omitempty" bson:"-"`
-	ProfileMessage     string    `json:"profileMessage,omitempty" bson:"-"`
-	Experience         string    `json:"experience,omitempty" bson:"-"`
-	BirthDate          time.Time `json:"birthDate,omitempty" bson:"-"`
-	Job                string    `json:"job,omitempty" bson:"-"` 
+	UserId             string    `json:"UserId,omitempty" bson:"UserId,omitempty"`
+	Name               string    `json:"Name,omitempty" bson:"Name"`
+	Email              string    `json:"Email,omitempty" bson:"Email"`
+	PassWord           string    `json:"PassWord,omitempty" bson:"PassWord"`
+	ProfileMessage     string    `json:"ProfileMessage,omitempty" bson:"ProfileMessage"`
+	Experience         string    `json:"Experience,omitempty" bson:"Experience"`
+	BirthDate          time.Time `json:"Birthdate,omitempty" bson:"Birthdate"`
+	Job                string    `json:"Job,omitempty" bson:"Job"` 
 }

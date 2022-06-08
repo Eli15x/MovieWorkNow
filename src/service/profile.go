@@ -11,7 +11,6 @@ import (
 	"github.com/Eli15x/MovieWorkNow/src/repository"
 	"github.com/Eli15x/MovieWorkNow/utils"
 	"go.mongodb.org/mongo-driver/bson"
-
 	"github.com/fatih/structs"
 )
 
@@ -24,7 +23,7 @@ type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfile(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
-	CheckInformationValid(ctx echo.Context,email string, password string) error
+	CheckInformationValid(ctx echo.Context,email string, password string) ( string, error)
 	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string, friend *models.Friend) error
 	AddRequestFriend(ctx echo.Context,UserId string,FriendId string, friendUser *models.Friend) error
 	DeleteFriendRequest(ctx echo.Context,UserId string, FriendId string, friendUser *models.Friend) error
@@ -104,21 +103,29 @@ func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, er
 	return result, nil
 }
 
-func (p *profile)CheckInformationValid(ctx echo.Context,email string, password string) error {
-	var profile models.Profile
+func (p *profile)CheckInformationValid(ctx echo.Context,email string, password string)  (string, error) {
+	var profile *models.Profile
 
 	filter := map[string]interface{}{"Email": email, "PassWord": password}
-
-	result , err := repository.Find(ctx, "profile", filter, &profile)
+	result := storage.GetInstance().FindOne(ctx, "profile",filter)
 
 	if result == nil {
-		return errors.New("Check Information: user not find")
+		return  "", errors.New("Check Information: user not find")
 	}
+
+	err := result.Decode(&profile)
+    if err != nil {
+		fmt.Println(err)
+		return "",errors.New("Error Decode Profile") 
+    }
+
 	if err != nil {
-		return errors.New("Check Information: problem to Find user login into MongoDB")
+		return "", errors.New("Check Information: problem to Find user login into MongoDB")
 	}
-	return nil
+
+	return profile.UserId , nil
 }
+
 
 func (p *profile)AddRelationFriendProfile(ctx echo.Context,UserId string,FriendId string, friendUser *models.Friend) error{
 

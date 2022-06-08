@@ -13,7 +13,7 @@ available at: http://localhost:1323
 ### Rotas
 ```sh
 
-// check Valid Login
+// Check Valid Login
 curl -X GET 'http://localhost:8888/profile/email/:email/password/:password' 
 --header 'email: XXXXX' 
 --header 'password: XXXXX' 

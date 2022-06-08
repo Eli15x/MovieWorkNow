@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
     "strings"
 	"github.com/Eli15x/MovieWorkNow/src/service"
@@ -163,9 +164,15 @@ func AddRequestFriend(c echo.Context) error {
 }
 
 func CheckInformation(c echo.Context) error {
+	json_map := make(map[string]interface{})
+	err := json.NewDecoder(c.Request().Body).Decode(&json_map)
 
-	email := c.Param("email")
-	password := c.Param("password")
+	if err != nil{
+		return err
+	}
+
+	email := json_map["email"].(string) //está dando erro quando tenta pegar o "email" e ele não existe.
+	password := json_map["password"].(string)
 
 	if email == "" {
 		return c.String(400,"AddContent Error: email not find")
@@ -175,12 +182,12 @@ func CheckInformation(c echo.Context) error {
 		return c.String(400,"AddContent Error: password not find")
 	}
 
-	err := service.GetInstanceProfile().CheckInformationValid(c,email,password)
+	userId, err := service.GetInstanceProfile().CheckInformationValid(c,email,password)
 	if err != nil{
 		return c.String(400, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, "ok")	
+	return c.JSON(http.StatusOK, userId)	
 }
 
 func AddContent(c echo.Context) error {
