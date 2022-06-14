@@ -3,14 +3,25 @@ package main
 import (
   "github.com/labstack/echo/v4"
   //"github.com/labstack/echo/v4/middleware"
-  //"net/http"
+  "github.com/bugsnag/bugsnag-go/v2"
   "github.com/Eli15x/MovieWorkNow/src/storage"
   "github.com/Eli15x/MovieWorkNow/src/handlers"
   "context"
   "time"
+  "fmt"
 )
 
 func main() {
+  bugsnag.Configure(bugsnag.Configuration{
+      APIKey:          "3ecac0ed23b7b1f4b863073135c602b8",
+      ReleaseStage:    "production",
+      // The import paths for the Go packages containing your source files
+      ProjectPackages: []string{"main", "github.com/org/myapp"},
+      // more configuration options
+  })
+
+  bugsnag.Notify(fmt.Errorf("Test error"))
+
   // Echo instance
   e := echo.New()
 
@@ -21,6 +32,7 @@ func main() {
   //Connection to Mongo
   if err := storage.GetInstance().Initialize(ctx); err != nil {
 		e.Logger.Fatal("[MONGO DB - MovieWorkNow] Could not resolve Data access layer. Error: ", err)
+    bugsnag.Notify(fmt.Errorf("[MONGO DB - MovieWorkNow] Could not resolve Data access layer. Error:"))
 	}
 
   // handler

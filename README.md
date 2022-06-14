@@ -11,47 +11,55 @@ available at: http://localhost:1323
 ```
 
 ### Rotas
-```sh
 
-// Check Valid Login
-curl -X GET 'http://localhost:8888/profile/email/:email/password/:password' 
---header 'email: XXXXX' 
---header 'password: XXXXX' 
+#### Check Valid Login
+``` sh 
+curl -X POST 'http://localhost:1323/profile/valid' 
+ -H 'Content-Type: application/json'
+ -d '{"email":"my_email","password":"my_password"}'
+```
 
-
-// pegar Profile
-curl -X GET 'http://localhost:8888/profile/id/:id' 
+#### pegar Profile
+``` sh 
+curl -X GET 'http://localhost:1323/profile/id/:id' 
 --header 'id: XXXXX' 
+```
 
-// pegar Profile Companie
-curl -X GET 'http://localhost:8888/profileCompanie/id/:id' 
+#### pegar Profile Companie
+``` sh 
+curl -X GET 'http://localhost:1323/profileCompanie/id/:id' 
 --header 'id: XXXXX' 
+```
 
-// Criar Profile
-curl -X GET 'http://localhost:8888/profile/name/:name/email/:email/password/:password' 
+#### Criar Profile
+``` sh 
+curl -X GET 'http://localhost:1323/profile/name/:name/email/:email/password/:password' 
 --header 'name: XXXXX' 
 --header 'email: XXXXX' 
 --header 'password: XXXXX' 
+```
 
-
-// Criar Profile Companie
-curl -X GET 'http://localhost:8888/profileCompanie/name/:name/email/:email/password/:password' 
+#### Criar Profile Companie
+``` sh 
+curl -X GET 'http://localhost:1323/profileCompanie/name/:name/email/:email/password/:password' 
 --header 'name: XXXXX'
 --header 'email: XXXXX' 
 --header 'password: XXXXX'
+```
 
-// Inserir informações de trabalho no perfil Profile 
-curl -X GET 'http://localhost:8888/profileCompanie/id/:id/job/:job/message/:message' \
+#### Inserir informações de trabalho no perfil Profile 
+``` sh 
+curl -X GET 'http://localhost:1323/profileCompanie/id/:id/job/:job/message/:message' \
 --header 'id: XXXXX' 
 --header 'job: X-X-XX-X' //sendo X um número, que corresponde ao id do job
 --header 'message: XXXXX' 
+```
 
-
-// Inserir informações de trabalho no perfil Profile Companie
-curl -X GET 'http://localhost:8888/profileCompanie/companieId/:companieId/job/:job/message/:message' 
+#### Inserir informações de trabalho no perfil Profile Companie
+``` sh 
+curl -X GET 'http://localhost:1323/profileCompanie/companieId/:companieId/job/:job/message/:message' 
 --header 'id: XXXXX' 
 --header 'job: X-X-XX-X' //sendo X um número, que corresponde ao id do job
 --header 'message: XXXXX' 
-
 
 ```

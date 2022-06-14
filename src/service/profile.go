@@ -10,6 +10,7 @@ import (
 	"github.com/Eli15x/MovieWorkNow/src/models"
 	"github.com/Eli15x/MovieWorkNow/src/repository"
 	"github.com/Eli15x/MovieWorkNow/utils"
+	"github.com/labstack/gommon/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"github.com/fatih/structs"
 )
@@ -118,6 +119,8 @@ func (p *profile)CheckInformationValid(ctx echo.Context,email string, password s
 		fmt.Println(err)
 		return "",errors.New("Error Decode Profile") 
     }
+
+	log.Infof("[CheckInformationValid] Object : %s \n", profile, "")
 
 	if err != nil {
 		return "", errors.New("Check Information: problem to Find user login into MongoDB")

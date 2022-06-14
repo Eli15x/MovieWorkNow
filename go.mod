@@ -3,10 +3,16 @@ module github.com/Eli15x/MovieWorkNow
 go 1.18
 
 require (
+	github.com/bugsnag/bugsnag-go/v2 v2.1.2 // indirect
+	github.com/bugsnag/panic-monitor v1.1.0 // indirect
+	github.com/bugsnag/panicwrap v1.3.4 // indirect
+	github.com/bugsnag/proc-launcher v1.0.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
+	github.com/gofrs/uuid v4.0.0+incompatible // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/labstack/echo/v4 v4.7.2 // indirect
 	github.com/labstack/gommon v0.3.1 // indirect
