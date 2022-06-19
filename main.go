@@ -2,7 +2,7 @@ package main
 
 import (
   "github.com/labstack/echo/v4"
-  //"github.com/labstack/echo/v4/middleware"
+  "github.com/labstack/echo/v4/middleware"
   "github.com/bugsnag/bugsnag-go/v2"
   "github.com/Eli15x/MovieWorkNow/src/storage"
   "github.com/Eli15x/MovieWorkNow/src/handlers"
@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+  //bugsnag configure
   bugsnag.Configure(bugsnag.Configuration{
       APIKey:          "3ecac0ed23b7b1f4b863073135c602b8",
       ReleaseStage:    "production",
@@ -24,6 +25,9 @@ func main() {
 
   // Echo instance
   e := echo.New()
+  e.Use(middleware.CORS())
+  e.Use(middleware.Logger())
+  e.Use(middleware.Recover())
 
   //Context
   ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -35,7 +39,7 @@ func main() {
     bugsnag.Notify(fmt.Errorf("[MONGO DB - MovieWorkNow] Could not resolve Data access layer. Error:"))
 	}
 
-  // handler
+  // Handler
 	profile := e.Group("/profile")
 	profile.GET("/name/:name/email/:email/password/:password", handlers.CreateProfile)
   profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformationProfile)

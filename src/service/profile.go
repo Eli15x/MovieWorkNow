@@ -24,7 +24,7 @@ type CommandProfile interface {
 	CreateNewProfile(ctx echo.Context, name string,email string,password string) error
 	AddInformationProfile(ctx echo.Context,id string,job []string, message string) error
 	GetInformationProfile(ctx echo.Context,id string) ([]bson.M, error)
-	CheckInformationValid(ctx echo.Context,email string, password string) ( string, error)
+	CheckInformationValid(ctx echo.Context,email string, password string, profile *models.Profile) ( string, error)
 	AddRelationFriendProfile(ctx echo.Context,UserId_user string,UserId_value string, friend *models.Friend) error
 	AddRequestFriend(ctx echo.Context,UserId string,FriendId string, friendUser *models.Friend) error
 	DeleteFriendRequest(ctx echo.Context,UserId string, FriendId string, friendUser *models.Friend) error
@@ -104,27 +104,24 @@ func (p *profile)GetInformationProfile(ctx echo.Context,id string) ([]bson.M, er
 	return result, nil
 }
 
-func (p *profile)CheckInformationValid(ctx echo.Context,email string, password string)  (string, error) {
-	var profile *models.Profile
+func (p *profile)CheckInformationValid(ctx echo.Context,email string, password string, profile *models.Profile)  (string, error) {
 
 	filter := map[string]interface{}{"Email": email, "PassWord": password}
 	result := storage.GetInstance().FindOne(ctx, "profile",filter)
 
+	fmt.Println(result)
 	if result == nil {
 		return  "", errors.New("Check Information: user not find")
 	}
 
-	err := result.Decode(&profile)
+	err := result.Decode(profile)
     if err != nil {
-		fmt.Println(err)
 		return "",errors.New("Error Decode Profile") 
     }
 
-	log.Infof("[CheckInformationValid] Object : %s \n", profile, "")
+	fmt.Println(profile)
 
-	if err != nil {
-		return "", errors.New("Check Information: problem to Find user login into MongoDB")
-	}
+	log.Infof("[CheckInformationValid] Object : %s \n", profile, "")
 
 	return profile.UserId , nil
 }

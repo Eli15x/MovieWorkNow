@@ -50,20 +50,15 @@ func GetInstance() MongoDB {
 
 func (m *mongodbImpl) Initialize(ctx context.Context) error {
 
+	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
+
 	clientOptions := options.Client().
-	ApplyURI("mongodb+srv://elisacds:elisacds@cluster0.e7uxp.mongodb.net/MovieWorkNow?retryWrites=true&w=majority")
+	ApplyURI("mongodb+srv://elisacds:elisacds@cluster0.e7uxp.mongodb.net/MovieWorkNow?retryWrites=true&w=majority").SetServerAPIOptions(serverAPIOptions)
 
 	client, err := mongo.Connect(ctx, clientOptions)
     if err != nil {
         log.Fatal(err)
     }
-
-	//Está dando proble	
-
-	/*err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		return err
-	}*/
 
 	m.dbName = "MovieWorkNow"
 	m.client = client

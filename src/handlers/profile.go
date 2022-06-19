@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
     "strings"
+	"fmt"
 	"github.com/Eli15x/MovieWorkNow/src/service"
 	"github.com/Eli15x/MovieWorkNow/src/models"
 	"github.com/labstack/echo/v4"
@@ -164,6 +165,8 @@ func AddRequestFriend(c echo.Context) error {
 }
 
 func CheckInformation(c echo.Context) error {
+
+	fmt.Println("entrou")
 	json_map := make(map[string]interface{})
 	err := json.NewDecoder(c.Request().Body).Decode(&json_map)
 
@@ -173,7 +176,9 @@ func CheckInformation(c echo.Context) error {
 
 	email := json_map["email"].(string) //está dando erro quando tenta pegar o "email" e ele não existe.
 	password := json_map["password"].(string)
-
+	fmt.Println(email)
+	fmt.Println(password)
+	var profile models.Profile
 	if email == "" {
 		return c.String(400,"AddContent Error: email not find")
 	}
@@ -182,8 +187,9 @@ func CheckInformation(c echo.Context) error {
 		return c.String(400,"AddContent Error: password not find")
 	}
 
-	userId, err := service.GetInstanceProfile().CheckInformationValid(c,email,password)
+	userId, err := service.GetInstanceProfile().CheckInformationValid(c,email,password,&profile)
 	if err != nil{
+		fmt.Println(err)
 		return c.String(400, err.Error())
 	}
 
