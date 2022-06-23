@@ -3,14 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/Eli15x/MovieWorkNow/src/handlers"
 	"github.com/Eli15x/MovieWorkNow/src/storage"
 	"github.com/bugsnag/bugsnag-go/v2"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -25,36 +24,35 @@ func main() {
 
 	bugsnag.Notify(fmt.Errorf("Test error"))
 
-	// Echo instance
-	e := echo.New()
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:3000"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
-	}))
-
 	//Context
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	defer cancel()
 	//Connection to Mongo
 	if err := storage.GetInstance().Initialize(ctx); err != nil {
-		e.Logger.Fatal("[MONGO DB - MovieWorkNow] Could not resolve Data access layer. Error: ", err)
 		bugsnag.Notify(fmt.Errorf("[MONGO DB - MovieWorkNow] Could not resolve Data access layer. Error:"))
 	}
 
-	// Handler
-	profile := e.Group("/profile")
-	profile.GET("/name/:name/email/:email/password/:password", handlers.CreateProfile)
-	profile.GET("/id/:id/job/:job/message/:message", handlers.AddInformationProfile)
-	profile.GET("/id/:id", handlers.GetInformationByUserIdProfile)
-	profile.POST("/valid", handlers.CheckInformation)
-	profile.GET("/userid/:userid/friendid/:friendid", handlers.AddRelationFriend)
-	profile.GET("/id/:id/content/:content", handlers.AddContent)
-	profileCompanie := e.Group("/profileCompanie")
-	profileCompanie.GET("/name/:name/email/:email/password/:password", handlers.CreateProfileCompanie)
-	profileCompanie.GET("/companieId/:companieId/job/:job/message/:message", handlers.AddInformationProfileCompanie)
-	profileCompanie.GET("/id/:id", handlers.GetInformationByUserIdProfileCompanie)
+	router := gin.Default()
 
-	e.Logger.Fatal(e.Start(":1323"))
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"}
+	config.AllowHeaders = []string{"*"}
+	config.AllowMethods = []string{"*"}
+	config.AllowCredentials = true
+
+	router.Use(cors.New(config))
+
+	router.GET("/profile/name/:name/email/:email/password/:password", handlers.CreateProfile)
+	router.GET("/profile/id/:id/job/:job/message/:message", handlers.AddInformationProfile)
+	router.GET("/profile/id/:id", handlers.GetInformationByUserIdProfile)
+	router.POST("/profile/valid", handlers.CheckInformation)
+	router.GET("/profile/userid/:userid/friendid/:friendid", handlers.AddRelationFriend)
+	router.GET("/profile//id/:id/content/:content", handlers.AddContent)
+
+	router.GET("/profileCompanie/name/:name/email/:email/password/:password", handlers.CreateProfileCompanie)
+	router.GET("/profileCompanie/companieId/:companieId/job/:job/message/:message", handlers.AddInformationProfileCompanie)
+	router.GET("/profileCompanie/id/:id", handlers.GetInformationByUserIdProfileCompanie)
+
+	router.Run(":1323")
 }

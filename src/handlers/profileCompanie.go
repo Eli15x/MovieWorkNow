@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	"github.com/Eli15x/MovieWorkNow/src/service"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"github.com/labstack/gommon/log"
 )
 
-func CreateProfileCompanie(c echo.Context) error {
+func CreateProfileCompanie(c *gin.Context) {
 
 	name := c.Param("name")
 	email := c.Param("email")
@@ -22,15 +22,18 @@ func CreateProfileCompanie(c echo.Context) error {
 	}*/
 
 	if name == "" {
-		return c.String(403, "Create Profile Companie Error: name not find")
+		c.String(403, "Create Profile Companie Error: name not find")
+		return
 	}
 
 	if email == "" {
-		return c.String(403, "Create Profile Companie Error: email not find")
+		c.String(403, "Create Profile Companie Error: email not find")
+		return
 	}
 
 	if password == "" {
-		return c.String(403, "Create Profile Companie Error: password not find")
+		c.String(403, "Create Profile Companie Error: password not find")
+		return
 	}
 
 	/*if birthDate == "" {
@@ -39,28 +42,32 @@ func CreateProfileCompanie(c echo.Context) error {
 
 	err := service.GetInstanceProfileCompanie().CreateNewProfileCompanie(context.Background(), name, email, password)
 	if err != nil {
-		return c.String(403, err.Error())
+		c.String(403, err.Error())
+		return
 	}
 
-	return c.String(http.StatusOK, "Ok")
+	c.String(http.StatusOK, "Ok")
 }
 
-func AddInformationProfileCompanie(c echo.Context) error {
+func AddInformationProfileCompanie(c *gin.Context) {
 
 	companieId := c.Param("companieId")
 	job := c.Param("job")
 	message := c.Param("message")
 
 	if companieId == "" {
-		return c.String(403, "Add information Companie Error: CompanieId not find")
+		c.String(403, "Add information Companie Error: CompanieId not find")
+		return
 	}
 
 	if job == "" {
-		return c.String(403, "Add information Companie Error: job not find")
+		c.String(403, "Add information Companie Error: job not find")
+		return
 	}
 
 	if message == "" {
-		return c.String(403, "Add information Companie Error: message not find")
+		c.String(403, "Add information Companie Error: message not find")
+		return
 	}
 	var jobList []string
 
@@ -68,26 +75,29 @@ func AddInformationProfileCompanie(c echo.Context) error {
 
 	err := service.GetInstanceProfileCompanie().AddInformationProfileCompanie(context.Background(), companieId, jobList, message)
 	if err != nil {
-		return c.String(403, err.Error())
+		c.String(403, err.Error())
+		return
 	}
 
-	return c.String(http.StatusOK, "Ok")
+	c.String(http.StatusOK, "Ok")
 }
 
-func GetInformationByUserIdProfileCompanie(c echo.Context) error {
+func GetInformationByUserIdProfileCompanie(c *gin.Context) {
 
 	id := c.Param("id")
 
 	if id == "" {
-		return c.String(403, "Create Profile Companie Error: id not find")
+		c.String(403, "Create Profile Companie Error: id not find")
+		return
 	}
 
 	result, err := service.GetInstanceProfileCompanie().GetInformationProfileCompanie(context.Background(), id)
 	if err != nil {
-		return c.String(403, err.Error())
+		c.String(403, err.Error())
+		return
 	}
 
 	log.Infof("[GetInformation] Object : %s \n", result, "")
 
-	return c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result)
 }

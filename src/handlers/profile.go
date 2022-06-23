@@ -9,52 +9,59 @@ import (
 
 	"github.com/Eli15x/MovieWorkNow/src/models"
 	"github.com/Eli15x/MovieWorkNow/src/service"
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"github.com/labstack/gommon/log"
 )
 
-func CreateProfile(c echo.Context) error {
+func CreateProfile(c *gin.Context) {
 
 	name := c.Param("name")
 	email := c.Param("email")
 	password := c.Param("password")
 
 	if name == "" {
-		return c.String(400, "Create Profile Error: name not find")
+		c.String(http.StatusBadRequest, "Create Profile Error: name not find")
+		return
 	}
 
 	if email == "" {
-		return c.String(400, "Create Profile Error: email not find")
+		c.String(400, "Create Profile Error: email not find")
+		return
 	}
 
 	if password == "" {
-		return c.String(400, "Create Profile Error: password not find")
+		c.String(400, "Create Profile Error: password not find")
+		return
 	}
 
 	err := service.GetInstanceProfile().CreateNewProfile(context.Background(), name, email, password)
 	if err != nil {
-		return c.String(400, err.Error())
+		c.String(400, err.Error())
+		return
 	}
 
-	return c.String(http.StatusOK, "Ok")
+	c.String(http.StatusOK, "Ok")
 }
 
-func AddInformationProfile(c echo.Context) error {
+func AddInformationProfile(c *gin.Context) {
 
 	id := c.Param("id")
 	job := c.Param("job")
 	message := c.Param("message")
 
 	if id == "" {
-		return c.String(400, "Create Profile Error: id not find")
+		c.String(400, "Create Profile Error: id not find")
+		return
 	}
 
 	if job == "" {
-		return c.String(400, "Create Profile Error: job not find")
+		c.String(400, "Create Profile Error: job not find")
+		return
 	}
 
 	if message == "" {
-		return c.String(400, "Create Profile Error: message not find")
+		c.String(400, "Create Profile Error: message not find")
+		return
 	}
 
 	var jobList []string
@@ -63,109 +70,123 @@ func AddInformationProfile(c echo.Context) error {
 
 	err := service.GetInstanceProfile().AddInformationProfile(context.Background(), id, jobList, message)
 	if err != nil {
-		return c.String(403, err.Error())
+		c.String(403, err.Error())
+		return
 	}
 
-	return c.String(http.StatusOK, "Ok")
+	c.String(http.StatusOK, "Ok")
 }
 
-func GetInformationByUserIdProfile(c echo.Context) error {
+func GetInformationByUserIdProfile(c *gin.Context) {
 
 	id := c.Param("id")
 
 	if id == "" {
-		return c.String(400, "Create Profile Error: id not find")
+		c.String(400, "Create Profile Error: id not find")
+		return
 	}
 
 	result, err := service.GetInstanceProfile().GetInformationProfile(context.Background(), id)
 	if err != nil {
-		return c.String(400, err.Error())
+		c.String(400, err.Error())
+		return
 	}
 
 	log.Infof("[GetInformation] Object : %s \n", result, "")
 
-	return c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result)
 }
 
-func AddRelationFollow(c echo.Context) error {
+func AddRelationFollow(c *gin.Context) {
 
 	id := c.Param("id")
 	companieId := c.Param("companieId")
 
 	if id == "" {
-		return c.String(400, "Create Profile Error: id not find")
+		c.String(400, "Create Profile Error: id not find")
+		return
 	}
 
 	if companieId == "" {
-		return c.String(400, "Create Profile Error: id not find")
+		c.String(400, "Create Profile Error: id not find")
+		return
 	}
 
 	result, err := service.GetInstanceProfile().GetInformationProfile(context.Background(), id)
 	if err != nil {
-		return c.String(400, err.Error())
+		c.String(400, err.Error())
+		return
 	}
 
 	log.Infof("[GetInformation] Object : %s \n", result, "")
 
-	return c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, result)
 }
 
-func AddRelationFriend(c echo.Context) error {
+func AddRelationFriend(c *gin.Context) {
 
 	UserId := c.Param("userid")
 	FriendId := c.Param("friendid")
 
 	if UserId == "" {
-		return c.String(400, "Create Profile Error: UserId_user not find")
+		c.String(400, "Create Profile Error: UserId_user not find")
+		return
 	}
 
 	if FriendId == "" {
-		return c.String(400, "Create Profile Error: UserId not find")
+		c.String(400, "Create Profile Error: UserId not find")
+		return
 	}
 
 	var friend models.Friend
 	err := service.GetInstanceProfile().AddRelationFriendProfile(context.Background(), UserId, FriendId, &friend)
 	if err != nil {
-		return c.String(403, err.Error())
+		c.String(403, err.Error())
+		return
 	}
 
 	err = service.GetInstanceProfile().AddRelationFriendProfile(context.Background(), FriendId, UserId, &friend)
 	if err != nil {
-		return c.String(403, err.Error())
+		c.String(403, err.Error())
+		return
 	}
 
-	return c.JSON(http.StatusOK, "ok")
+	c.JSON(http.StatusOK, "ok")
 }
 
-func AddRequestFriend(c echo.Context) error {
+func AddRequestFriend(c *gin.Context) {
 
 	UserId := c.Param("userid")
 	FriendId := c.Param("friendid")
 
 	if UserId == "" {
-		return c.String(400, "Create Profile Error: UserId_user not find")
+		c.String(400, "Create Profile Error: UserId_user not find")
+		return
 	}
 
 	if FriendId == "" {
-		return c.String(400, "Create Profile Error: UserId not find")
+		c.String(400, "Create Profile Error: UserId not find")
+		return
 	}
 
 	var friend models.Friend
 	err := service.GetInstanceProfile().AddRequestFriend(context.Background(), UserId, FriendId, &friend)
 	if err != nil {
-		return c.String(403, err.Error())
+		c.String(403, err.Error())
+		return
 	}
 
-	return c.JSON(http.StatusOK, "ok")
+	c.JSON(http.StatusOK, "ok")
 }
 
-func CheckInformation(c echo.Context) error {
+func CheckInformation(c *gin.Context) {
 
 	json_map := make(map[string]interface{})
-	err := json.NewDecoder(c.Request().Body).Decode(&json_map)
+	err := json.NewDecoder(c.Request.Body).Decode(&json_map)
 
 	if err != nil {
-		return err
+		c.String(400, "%s", err)
+		return
 	}
 
 	email := json_map["email"].(string) //está dando erro quando tenta pegar o "email" e ele não existe.
@@ -173,39 +194,45 @@ func CheckInformation(c echo.Context) error {
 
 	var profile models.Profile
 	if email == "" {
-		return c.String(400, "AddContent Error: email not find")
+		c.String(400, "AddContent Error: email not find")
+		return
 	}
 
 	if password == "" {
-		return c.String(400, "AddContent Error: password not find")
+		c.String(400, "AddContent Error: password not find")
+		return
 	}
 
 	userId, err := service.GetInstanceProfile().CheckInformationValid(context.Background(), email, password, &profile)
 	if err != nil {
 		fmt.Println(err)
-		return c.String(400, err.Error())
+		c.String(400, err.Error())
+		return
 	}
 
-	return c.JSON(http.StatusOK, userId)
+	c.JSON(http.StatusOK, userId)
 }
 
-func AddContent(c echo.Context) error {
+func AddContent(c *gin.Context) {
 
 	userId := c.Param("id")
 	content := c.Param("content")
 
 	if userId == "" {
-		return c.String(400, "AddContent Error: UserId not find")
+		c.String(400, "AddContent Error: UserId not find")
+		return
 	}
 
 	if content == "" {
-		return c.String(400, "AddContent Error: UserId not find")
+		c.String(400, "AddContent Error: UserId not find")
+		return
 	}
 
 	err := service.GetInstanceProfile().AddContent(context.Background(), userId, content)
 	if err != nil {
-		return c.String(400, err.Error())
+		c.String(400, err.Error())
+		return
 	}
 
-	return c.JSON(http.StatusOK, "ok")
+	c.JSON(http.StatusOK, "ok")
 }

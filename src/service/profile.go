@@ -122,6 +122,8 @@ func (p *profile) CheckInformationValid(ctx context.Context, email string, passw
 
 	log.Infof("[CheckInformationValid] Object : %s \n", profile, "")
 
+	fmt.Println(profile.UserId)
+
 	return profile.UserId, nil
 }
 
