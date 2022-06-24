@@ -203,14 +203,14 @@ func CheckInformation(c *gin.Context) {
 		return
 	}
 
-	userId, err := service.GetInstanceProfile().CheckInformationValid(context.Background(), email, password, &profile)
+	profile_info, err := service.GetInstanceProfile().CheckInformationValid(context.Background(), email, password, &profile)
 	if err != nil {
 		fmt.Println(err)
 		c.String(400, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, userId)
+	c.JSON(http.StatusOK, profile_info)
 }
 
 func AddContent(c *gin.Context) {

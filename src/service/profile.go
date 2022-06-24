@@ -25,7 +25,7 @@ type CommandProfile interface {
 	CreateNewProfile(ctx context.Context, name string, email string, password string) error
 	AddInformationProfile(ctx context.Context, id string, job []string, message string) error
 	GetInformationProfile(ctx context.Context, id string) ([]bson.M, error)
-	CheckInformationValid(ctx context.Context, email string, password string, profile *models.Profile) (string, error)
+	CheckInformationValid(ctx context.Context, email string, password string, profile *models.Profile) (*models.Profile, error)
 	AddRelationFriendProfile(ctx context.Context, UserId_user string, UserId_value string, friend *models.Friend) error
 	AddRequestFriend(ctx context.Context, UserId string, FriendId string, friendUser *models.Friend) error
 	DeleteFriendRequest(ctx context.Context, UserId string, FriendId string, friendUser *models.Friend) error
@@ -105,26 +105,24 @@ func (p *profile) GetInformationProfile(ctx context.Context, id string) ([]bson.
 	return result, nil
 }
 
-func (p *profile) CheckInformationValid(ctx context.Context, email string, password string, profile *models.Profile) (string, error) {
+func (p *profile) CheckInformationValid(ctx context.Context, email string, password string, profile *models.Profile) (*models.Profile, error) {
 
 	filter := map[string]interface{}{"Email": email, "PassWord": password}
 	result := storage.GetInstance().FindOne(ctx, "profile", filter)
 
 	if result == nil {
-		return "", errors.New("Check Information: user not find")
+		return profile, errors.New("Check Information: user not find")
 	}
 
 	err := result.Decode(profile)
 	if err != nil {
 		fmt.Println(err)
-		return "", errors.New("Error Decode Profile")
+		return profile, errors.New("Error Decode Profile")
 	}
 
 	log.Infof("[CheckInformationValid] Object : %s \n", profile, "")
 
-	fmt.Println(profile.UserId)
-
-	return profile.UserId, nil
+	return profile, nil
 }
 
 func (p *profile) AddRelationFriendProfile(ctx context.Context, UserId string, FriendId string, friendUser *models.Friend) error {
